@@ -4,6 +4,8 @@ import java.util.ArrayList;
 public class TaskManager {
     private final HashMap<Integer, Task> tasksMap = new HashMap<>();
     private final HashMap<Integer, Epic> epicMap = new HashMap<>();
+    //Я не особо понял но мне сказали что писать методы отдельно для Epic здесь вроде не надо тк как ту и так всё есть
+    //В общем жду соментарии насколко всё плохо
 
     public void createTask(Task task) {
         tasksMap.put(task.getTaskId(), task);
