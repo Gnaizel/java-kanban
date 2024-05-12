@@ -5,6 +5,7 @@ public class Task {
     protected int taskId = 1;
     String taskName;
     String taskDescription;
+    Status status;
 
     Task(Status status, String taskName, String taskDescription) {
         this.taskName = taskName;
@@ -13,26 +14,24 @@ public class Task {
         taskCount++;
     }
 
-//    @Override
-//    public boolean equals(Object o) {
-//
-//    }
+    public void manageStatus(Status status) {
+        this.status = status;
+    }
 
-    //Set and Get
+    public Status getStatus() {
+        return status;
+    }
+
+    public void setStatus(Status status) {
+        this.status = status;
+    }
+
     public int getTaskCount() {
         return taskCount;
     }
 
-    public void setTaskCount(int taskCount) {
-        this.taskCount = taskCount;
-    }
-
     public int getTaskId() {
         return taskId;
-    }
-
-    public void setTaskId(int taskId) {
-        this.taskId = taskId;
     }
 
     public String getTaskName() {

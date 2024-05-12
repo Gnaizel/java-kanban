@@ -1,7 +1,15 @@
-public class Subtask {
-    String SabTaskName;
+public class Subtask extends Epic {
 
-    Subtask(String SabTaskName){
-        this.SabTaskName = SabTaskName;
+    Status status;
+    String subTaskName;
+
+    Subtask(Status status, String subTaskName, String description) {
+        super(status, subTaskName, description);
+        this.status = status;
+        this.subTaskName = subTaskName;
+    }
+
+    public Status getStatus() {
+        return status;
     }
 }

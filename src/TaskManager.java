@@ -23,8 +23,8 @@ public class TaskManager {
 
     public Task getTaskByName(String name) {
         for (Task task : tasksMap.values()) {
-            if (task.taskName.equals(name)) {
-                return tasksMap.get(task.taskId);
+            if (task.getTaskName().equals(name)) {
+                return task;
             }
         }
         return null;
@@ -32,8 +32,7 @@ public class TaskManager {
 
     public void updateTask(Task updatedTask) {
         tasksMap.replace(updatedTask.getTaskId(), updatedTask);
-        tasksMap.put(updatedTask.getTaskId(), updatedTask);
-    } // доработать
+    }
 
     public void deleteTaskById(int taskId) {
         tasksMap.remove(taskId);
@@ -41,34 +40,23 @@ public class TaskManager {
 
     public void deleteTaskByName(String name) {
         for (Task task : tasksMap.values()) {
-            if (task.taskName.equals(name)) {
+            if (task.getTaskName().equals(name)) {
                 tasksMap.remove(task.getTaskId());
             }
         }
     }
 
-    // Epic
     public ArrayList<Subtask> getAllSubtasksForEpic(String epicName) {
-        ArrayList<Subtask> subtasks = new ArrayList<>();
         for (Epic epic : epicMap.values()) {
-            if (epic.epicName.equals(epicName)) {
-                subtasks = epic.subtasks;
+            if (epic.getEpicName().equals(epicName)) {
+                return epic.getSubtasks();
             }
         }
-        return subtasks;
+        return new ArrayList<>();
     }
 
-//    public void manageStatus(Task task, Status status) {
-//        if (task instanceof Epic) {
-//            Epic epic = (Epic) task;
-//            boolean allSubtasksDone = epic.getSubtasks().stream().allMatch(subtask -> subtask.getStatus() == Status.DONE);
-//            if (epic.getSubtasks().isEmpty() || allSubtasksDone) {
-//                epic.setStatus(Status.NEW);
-//            } else {
-//                epic.setStatus(status);
-//            }
-//        } else {
-//            task.setStatus(status);
-//        }
-//    }
+    public void manageStatus(Task task, Status status) {
+        task.manageStatus(status);
+    }
+
 }
