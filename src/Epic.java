@@ -36,7 +36,7 @@ public class Epic extends Task {
         }
     }
 
-    public void setSubTask(Status status, String subtaskName, String description) {
+    public void addSubTask(Status status, String subtaskName, String description) {
         subtasks.add(new Subtask(status, subtaskName, description));
         subTaskNumber++;
     }
@@ -63,5 +63,10 @@ public class Epic extends Task {
 
     public void setStatus(Status status) {
         this.status = status;
+    }
+
+    public void addSubTask(Subtask subtask) {
+        subtasks.add(subtask);
+        subTaskNumber++;
     }
 }
