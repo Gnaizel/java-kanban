@@ -1,8 +1,7 @@
-import java.util.Objects;
+package model;
 
 public class Task {
-    protected int  taskCount = 1;
-    protected int taskId = 1;
+    private int taskId = 1;
     String taskName;
     String taskDescription;
     Status status;
@@ -10,8 +9,7 @@ public class Task {
     Task(Status status, String taskName, String taskDescription) {
         this.taskName = taskName;
         this.taskDescription = taskDescription;
-        taskId = Objects.hashCode(taskCount);
-        taskCount++;
+        this.taskId++;
     }
 
     public void manageStatus(Status status) {
@@ -24,10 +22,6 @@ public class Task {
 
     public void setStatus(Status status) {
         this.status = status;
-    }
-
-    public int getTaskCount() {
-        return taskCount;
     }
 
     public int getTaskId() {

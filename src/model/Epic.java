@@ -1,9 +1,9 @@
+package model;
+
 import java.util.Objects;
 import java.util.ArrayList;
 
 public class Epic extends Task {
-    String epicName;
-    String epicDescription;
     Status status;
     int epicNumber = 1;
     int subTaskNumber = 0;
@@ -12,45 +12,28 @@ public class Epic extends Task {
 
     Epic(Status status, String epicName, String epicDescription) {
         super(status, epicName, epicDescription);
-        this.epicName = epicName;
+        taskName = epicName;
         this.status = status;
-        this.epicDescription = epicDescription;
+        taskDescription = epicDescription;
         epicId = Objects.hashCode(epicNumber);
         subtasks = new ArrayList<>();
-        epicNumber++;
-    }
-
-    @Override
-    public void manageStatus(Status status) {
-        boolean allSubtasksDone = true;
-        for (Task subtask : getSubtasks()) {
-            if (subtask.getStatus() != Status.DONE) {
-                allSubtasksDone = false;
-                break;
-            }
-        }
-        if (allSubtasksDone) {
-            setStatus(Status.DONE);
-        } else {
-            setStatus(status);
-        }
     }
 
     public void addSubTask(Status status, String subtaskName, String description) {
         subtasks.add(new Subtask(status, subtaskName, description));
         subTaskNumber++;
     }
-    public void deleteSubTask(String subtaskName) {
-        subtasks.remove(subTaskNumber);
+    public void deleteSubTask(Subtask subtask) {
+        subtasks.remove(subtask);
         subTaskNumber--;
     }
 
     public String getEpicName() {
-        return epicName;
+        return taskName;
     }
 
     public void setEpicName(String epicName) {
-        this.epicName = epicName;
+        this.taskName = epicName;
     }
 
     public ArrayList<Subtask> getSubtasks() {

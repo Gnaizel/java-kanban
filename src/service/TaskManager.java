@@ -1,3 +1,10 @@
+package service;
+
+import model.Epic;
+import model.Status;
+import model.Subtask;
+import model.Task;
+
 import java.util.HashMap;
 import java.util.ArrayList;
 
@@ -10,7 +17,7 @@ public class TaskManager {
     }
 
     public void getAllTasks() {
-        System.out.println("All Task:");
+        System.out.println("All model.Task:");
         for (Task task : tasksMap.values()) {
             System.out.println(task.getTaskId() + "\n" + task.getTaskName() + "\n" + task.getTaskDescription() + "\n" + task.getStatus());
         }
@@ -81,7 +88,18 @@ public class TaskManager {
         return new ArrayList<>();
     }
 
-    public void manageStatus(Task task, Status status) {
-        task.manageStatus(status);
+    public void manageStatus(Status status) {
+        boolean allSubtasksDone = true;
+        for (Task subtask : getSubtasks()) {
+            if (subtask.getStatus() != Status.DONE) {
+                allSubtasksDone = false;
+                break;
+            }
+        }
+        if (allSubtasksDone) {
+            setStatus(Status.DONE);
+        } else {
+            setStatus(status);
+        }
     }
 }
