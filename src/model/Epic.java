@@ -1,11 +1,9 @@
 package model;
 
-import java.util.Objects;
 import java.util.ArrayList;
 
 public class Epic extends Task {
     Status status;
-    int epicNumber = 1;
     int subTaskNumber = 0;
     int epicId = 1;
     ArrayList<Subtask> subtasks;
@@ -15,8 +13,12 @@ public class Epic extends Task {
         taskName = epicName;
         this.status = status;
         taskDescription = epicDescription;
-        epicId = Objects.hashCode(epicNumber);
+        epicId++;
         subtasks = new ArrayList<>();
+    }
+
+    public boolean subtasksNull() {
+        return subtasks.isEmpty();
     }
 
     public void addSubTask(Status status, String subtaskName, String description) {
