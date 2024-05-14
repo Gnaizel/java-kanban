@@ -1,31 +1,21 @@
 package model;
 
 public class Task {
-    private int taskId = 1;
-    String taskName;
-    String taskDescription;
-    Status status;
+
+    private String taskName;
+    private String taskDescription;
+    private Status status;
+    private int ID;
 
     Task(Status status, String taskName, String taskDescription) {
         this.taskName = taskName;
         this.taskDescription = taskDescription;
-        this.taskId++;
+        this.status = status;
+        this.ID = service.ID.TaskId++;
     }
 
     public void manageStatus(Status status) {
         this.status = status;
-    }
-
-    public Status getStatus() {
-        return status;
-    }
-
-    public void setStatus(Status status) {
-        this.status = status;
-    }
-
-    public int getTaskId() {
-        return taskId;
     }
 
     public String getTaskName() {
@@ -44,5 +34,16 @@ public class Task {
         this.taskDescription = taskDescription;
     }
 
+    public Status getStatus() {
+        return status;
+    }
+
+    public void setStatus(Status status) {
+        this.status = status;
+    }
+
+    public int getID() {
+        return ID;
+    }
 
 }

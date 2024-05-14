@@ -3,23 +3,17 @@ package model;
 public class Subtask extends Task {
 
     private String subTaskName;
+    private int beEpic;
+    private String taskDescription;
     private Status status;
+    private int ID;
 
-    Subtask(Status status, String subTaskName, String description) {
+    Subtask(Status status, String subTaskName, String description, Epic epic) {
         super(status, subTaskName, description);
-        this.status = status;
         this.subTaskName = subTaskName;
-    }
-
-    public void setStatus(Status status) {
+        this.beEpic = epic.getID();
+        this.taskDescription = description;
         this.status = status;
-    }
-
-    public String getSubTaskName() {
-        return subTaskName;
-    }
-
-    public void setSubTaskName(String subTaskName) {
-        this.subTaskName = subTaskName;
+        this.ID = service.ID.SubTaskId++;
     }
 }

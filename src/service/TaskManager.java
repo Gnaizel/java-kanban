@@ -7,14 +7,22 @@ import model.Task;
 
 import java.util.HashMap;
 import java.util.ArrayList;
-//Слимшком много методов Которыя я думаю даже хз зачем нужны если нада их удалить
-// или можно както расортировать напишите в коментарии пожалйста
+
 public class TaskManager {
     private final HashMap<Integer, Task> tasksMap = new HashMap<>();
     private final HashMap<Integer, Epic> epicMap = new HashMap<>();
+    private final HashMap<Integer, Subtask> subtaskMap = new HashMap<>();
 
     public void createTask(Task task) {
-        tasksMap.put(task.getTaskId(), task);
+        this.tasksMap.put(task.getID(), task);
+    }
+
+    public void createEpic(Epic epic) {
+        this.epicMap.put(epic.getID(), epic);
+    }
+
+    public void createSubtask(Subtask subtask, Epic epic) {
+        this.subtaskMap.put(subtask.getID(), subtask);
     }
 
     public ArrayList<Task> getAllTasks() {
@@ -37,8 +45,34 @@ public class TaskManager {
         tasksMap.clear();
     }
 
+    public void deleteAllEpics() {
+        epicMap.clear();
+    }
+
+    public void deleteAllSubtasks() {
+        for (Epic epic : epicMap.values()) {
+            epic.clearSubTasks();
+        }
+    }
+
+    public void deleteTask(Task task) {
+        tasksMap.remove(task.getID());
+    }
+
+    public void deleteEpic(Epic epic) {
+        epicMap.remove(epic.getID());
+    }
+
+    public void deleteSubtask(Subtask subtask, Epic epic) {
+        epic.deleteSubTask(subtask);
+    }
+
     public Task getTaskById(int taskId) {
         return tasksMap.get(taskId);
+    }
+
+    public Epic getEpicById(int taskId) {
+        return epicMap.get(taskId);
     }
 
     public Task getTaskByName(String name) {
@@ -60,42 +94,23 @@ public class TaskManager {
     }
 
     public void updateTask(Task updatedTask) {
-        tasksMap.replace(updatedTask.getTaskId(), updatedTask);
-    }
-
-    public void deleteTaskById(int taskId) {
-        tasksMap.remove(taskId);
-    }
-
-
-    public void createEpic(Epic epic) {
-        epicMap.put(epic.getTaskId(), epic);
-    }
-
-    public void deleteEpicById(int epicId) {
-        epicMap.remove(epicId);
-    }
-
-    public Epic getEpicById(int epicId) {
-        return epicMap.get(epicId);
+        tasksMap.replace(updatedTask.getID(), updatedTask);
     }
 
     public void updateEpic(Epic updatedEpic) {
-        epicMap.replace(updatedEpic.getTaskId(), updatedEpic);
+        epicMap.replace(updatedEpic.getID(), updatedEpic);
     }
 
     public ArrayList<Subtask> getAllSubtasksForEpic(String epicName) {
         for (Epic epic : epicMap.values()) {
-            if (epic.getEpicName().equals(epicName)) {
+            if (epic.getTaskName().equals(epicName)) {
                 return epic.getSubtasks();
-            } else {
-                return null;
             }
         }
-        return new ArrayList<>();
+        return null;
     }
 
-    public void EpicStatus(Epic epic) {
+    public void epicStatus(Epic epic) {
         if (epic.subtasksNull()) epic.setStatus(Status.NEW);
         boolean allSubtasksDone = true;
         for (Task subtask : epic.getSubtasks()) {
@@ -111,7 +126,7 @@ public class TaskManager {
         }
     }
 
-    public void SetSubtaskStatus(Subtask subtask, Status status) {
+    public void setSubTaskStatus(Subtask subtask, Status status) {
         subtask.setStatus(status);
     }
 }

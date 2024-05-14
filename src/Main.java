@@ -1,6 +1,9 @@
+import model.Epic;
+import model.Status;
+
 public class Main {
 
-//    public static void main(String[] args) {
+    public static void main(String[] args) {
 //        service.TaskManager taskManager = new service.TaskManager();
 //
 //        model.Task task1 = new model.Task(model.Status.IN_PROGRESS, "Первый таск", "Description 1");
@@ -34,5 +37,5 @@ public class Main {
 //
 //        taskManager.manageStatus(task1, model.Status.IN_PROGRESS);
 //        System.out.println("Обновленный статус выполнения задачи 1: " + task1.getStatus());
-//    }
+    }
 }

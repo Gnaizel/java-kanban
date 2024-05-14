@@ -3,17 +3,19 @@ package model;
 import java.util.ArrayList;
 
 public class Epic extends Task {
-    Status status;
-    int subTaskNumber = 0;
-    int epicId = 1;
-    ArrayList<Subtask> subtasks;
 
-    Epic(Status status, String epicName, String epicDescription) {
+    private String epicName;
+    private String taskDescription;
+    private Status status;
+    private int ID;
+    private ArrayList<Subtask> subtasks;
+
+    public Epic(Status status, String epicName, String epicDescription) {
         super(status, epicName, epicDescription);
-        taskName = epicName;
+        this.epicName = epicName;
         this.status = status;
-        taskDescription = epicDescription;
-        epicId++;
+        this.taskDescription = epicDescription;
+        this.ID = service.ID.EpicId++;
         subtasks = new ArrayList<>();
     }
 
@@ -21,37 +23,22 @@ public class Epic extends Task {
         return subtasks.isEmpty();
     }
 
-    public void addSubTask(Status status, String subtaskName, String description) {
-        subtasks.add(new Subtask(status, subtaskName, description));
-        subTaskNumber++;
-    }
     public void deleteSubTask(Subtask subtask) {
         subtasks.remove(subtask);
-        subTaskNumber--;
+        service.ID.SubTaskId--;
     }
 
-    public String getEpicName() {
-        return taskName;
+    public void clearSubTasks() {
+        subtasks.clear();
     }
 
-    public void setEpicName(String epicName) {
-        this.taskName = epicName;
+    public void addSubTask(Subtask subtask) {
+        subtasks.add(subtask);
+        service.ID.SubTaskId++;
     }
 
     public ArrayList<Subtask> getSubtasks() {
         return subtasks;
     }
 
-    public Status getStatus() {
-        return status;
-    }
-
-    public void setStatus(Status status) {
-        this.status = status;
-    }
-
-    public void addSubTask(Subtask subtask) {
-        subtasks.add(subtask);
-        subTaskNumber++;
-    }
 }
