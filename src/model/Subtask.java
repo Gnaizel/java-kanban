@@ -11,9 +11,17 @@ public class Subtask extends Task {
     Subtask(Status status, String subTaskName, String description, Epic epic) {
         super(status, subTaskName, description);
         this.subTaskName = subTaskName;
-        this.beEpic = epic.getID();
+        setBeEpic(epic);
         this.taskDescription = description;
         this.status = status;
         this.ID = service.ID.SubTaskId++;
+    }
+
+    public int getBeEpic() {
+        return beEpic;
+    }
+
+    public void setBeEpic(Epic epic) {
+        beEpic = epic.getID();
     }
 }

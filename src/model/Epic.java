@@ -25,7 +25,6 @@ public class Epic extends Task {
 
     public void deleteSubTask(Subtask subtask) {
         subtasks.remove(subtask);
-        service.ID.SubTaskId--;
     }
 
     public void clearSubTasks() {
@@ -34,7 +33,6 @@ public class Epic extends Task {
 
     public void addSubTask(Subtask subtask) {
         subtasks.add(subtask);
-        service.ID.SubTaskId++;
     }
 
     public ArrayList<Subtask> getSubtasks() {
