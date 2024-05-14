@@ -17,20 +17,37 @@ public class Epic extends Task {
         return subtasks.isEmpty();
     }
 
-    public void deleteSubTask(Subtask subtask) {
-        subtasks.remove(subtask);
-    }
-
-    public void clearSubTasks() {
-        subtasks.clear();
-    }
-
-    public void addSubTask(Subtask subtask) {
-        subtasks.add(subtask);
-    }
-
     public ArrayList<Subtask> getSubtasks() {
         return subtasks;
     }
+
+    public void updateEpicStatus() {
+        if (allSubtasksDone()) {
+            setStatus(Status.DONE);
+        } else if (allSubtasksNew()) {
+            setStatus(Status.NEW);
+        } else {
+            setStatus(Status.IN_PROGRESS);
+        }
+    }
+
+    public boolean allSubtasksDone() {
+        for (Task subtask : subtasks) {
+            if (subtask.getStatus() != Status.DONE) {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    public boolean allSubtasksNew() {
+        for (Task subtask : subtasks) {
+            if (subtask.getStatus() != Status.NEW) {
+                return false;
+            }
+        }
+        return true;
+    }
+
 
 }

@@ -125,21 +125,10 @@ public class TaskManager {
         return null;
     }
 
-    public void epicStatus(Epic epic) {
-        if (epic.subtasksNull()) epic.setStatus(Status.NEW);
-        boolean allSubtasksDone = true;
-        for (Task subtask : epic.getSubtasks()) {
-            if (subtask.getStatus() != Status.DONE) {
-                allSubtasksDone = false;
-                break;
-            }
-        }
-        if (allSubtasksDone) {
-            epic.setStatus(Status.DONE);
-        } else {
-            epic.setStatus(Status.IN_PROGRESS);
-        }
+    public void updateEpicStatus(Epic epic) {
+        epic.updateEpicStatus();
     }
+
 
     public void setSubTaskStatus(Subtask subtask, Status status) {
         subtask.setStatus(status);
