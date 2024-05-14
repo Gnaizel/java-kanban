@@ -4,19 +4,13 @@ import java.util.ArrayList;
 
 public class Epic extends Task {
 
-    private String epicName;
-    private String taskDescription;
-    private Status status;
     private int ID;
     private ArrayList<Subtask> subtasks;
 
     public Epic(Status status, String epicName, String epicDescription) {
         super(status, epicName, epicDescription);
-        this.epicName = epicName;
-        this.status = status;
-        this.taskDescription = epicDescription;
         this.ID = service.ID.EpicId++;
-        subtasks = new ArrayList<>();
+        this.subtasks = new ArrayList<>();
     }
 
     public boolean subtasksNull() {
