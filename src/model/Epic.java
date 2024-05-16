@@ -8,7 +8,7 @@ public class Epic extends Task {
 
     public Epic(Status status, String epicName, String epicDescription) {
         super(status, epicName, epicDescription);
-        int ID = service.ID.EpicId++;
+        int ID = service.ID.EpicId;
         this.subtasks = new ArrayList<>();
     }
 
@@ -32,15 +32,5 @@ public class Epic extends Task {
         }
         return true;
     }
-
-    public boolean allSubtasksNew() {
-        for (Task subtask : subtasks) {
-            if (subtask.getStatus() != Status.NEW) {
-                return false;
-            }
-        }
-        return true;
-    }
-
 
 }
