@@ -1,5 +1,7 @@
 package model;
 
+import service.ID;
+
 import java.util.ArrayList;
 
 public class Epic extends Task {
@@ -8,7 +10,7 @@ public class Epic extends Task {
 
     public Epic(Status status, String epicName, String epicDescription) {
         super(status, epicName, epicDescription);
-        int ID = service.ID.EpicId;
+        final int ID = service.ID.EpicId;
         this.subtasks = new ArrayList<>();
     }
 

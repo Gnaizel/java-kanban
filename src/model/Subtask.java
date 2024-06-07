@@ -10,6 +10,7 @@ public class Subtask extends Task {
         setBeEpic(epic);
         int ID = service.ID.SubTaskId;
         this.epic = epic;
+        int epicID = epic.getID();
     }
 
     public Epic getEpic() {
@@ -18,5 +19,9 @@ public class Subtask extends Task {
 
     public void setBeEpic(Epic epic) {
         beEpic = epic.getID();
+    }
+
+    public int getEpicId() {
+        return epic.getID();
     }
 }
