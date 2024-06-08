@@ -5,7 +5,7 @@ public class Subtask extends Task {
     private int beEpic;
     private Epic epic;
 
-    Subtask(Status status, String subTaskName, String description, Epic epic) {
+    public Subtask(Status status, String subTaskName, String description, Epic epic) {
         super(status, subTaskName, description);
         setBeEpic(epic);
         int ID = service.ID.SubTaskId;

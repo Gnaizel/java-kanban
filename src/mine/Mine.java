@@ -1,3 +1,5 @@
+package mine;
+
 import model.*;
 import service.*;
 
@@ -5,6 +7,21 @@ public class Mine {
 
     public static void main(String[] args) {
         TaskManager manager = new InMemoryTaskManager();
+
+        Epic epic = new Epic(Status.NEW, "epic1", "Description");
+        manager.createEpic(epic);
+        System.out.println("Epic created");
+
+        Subtask subtask = new Subtask(Status.IN_PROGRESS, "SubTaskNameByEpic1", "Description", epic);
+        manager.createSubtask(subtask);
+        System.out.println("Subtask created");
+
+        Task task = new Task(Status.IN_PROGRESS, "Task-Default", "Description");
+        manager.createTask(task);
+        System.out.println("Task created");
+
+        manager.getSubtaskById(subtask.getID());
+        System.out.println("Subtask get subtask by ID");
 
         printAllTasks(manager);
     }
