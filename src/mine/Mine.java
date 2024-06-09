@@ -8,7 +8,7 @@ public class Mine {
     public static void main(String[] args) {
         TaskManager manager = new InMemoryTaskManager();
 
-        Epic epic = new Epic(Status.NEW, "epic1", "Description");
+        Epic epic = new Epic("epic1", "Description");
         manager.createEpic(epic);
         System.out.println("Epic created");
 
@@ -34,7 +34,7 @@ public class Mine {
         for (Task epic : manager.getAllEpic()) {
             System.out.println(epic);
 
-            for (Task subtask : manager.getSubtasksById(epic.getID())) {
+            for (Task subtask : manager.getAllSubtasksForEpic(epic.getID())) {
                 System.out.println("--> " + subtask);
             }
         }

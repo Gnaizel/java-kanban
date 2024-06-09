@@ -5,13 +5,12 @@ public class Task {
     private String taskName;
     private String taskDescription;
     private Status status;
-    private final int ID;
+    private final int ID = service.ID.TaskId;
 
     public Task(Status status, String taskName, String taskDescription) {
         this.taskName = taskName;
         this.taskDescription = taskDescription;
         this.status = status;
-        ID = service.ID.TaskId;
     }
 
     public void manageStatus(Status status) {
@@ -43,7 +42,7 @@ public class Task {
     }
 
     public int getID() {
-        return ID;
+        return this.ID;
     }
 
 }

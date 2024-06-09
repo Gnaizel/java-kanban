@@ -40,8 +40,6 @@ public interface TaskManager {
 
     public Subtask getSubtaskById(int taskId);
 
-    public ArrayList<Subtask> getSubtasksById(int taskId);
-
     public void updateTask(Task updatedTask);
 
     public void updateEpic(Epic updatedEpic);

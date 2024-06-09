@@ -7,10 +7,10 @@ import java.util.ArrayList;
 public class Epic extends Task {
 
     private ArrayList<Subtask> subtasks;
+    private final int ID = service.ID.EpicId;
 
-    public Epic(Status status, String epicName, String epicDescription) {
-        super(status, epicName, epicDescription);
-        final int ID = service.ID.EpicId;
+    public Epic(String epicName, String epicDescription) {
+        super(Status.NEW, epicName, epicDescription);
         this.subtasks = new ArrayList<>();
     }
 
@@ -19,11 +19,11 @@ public class Epic extends Task {
     }
 
     public ArrayList<Subtask> getSubtasks() {
-        return subtasks;
+        return this.subtasks;
     }
 
     public void addSubTask(Subtask subtask) {
-        this.subtasks.add(subtask);
+        if (!subtasks.contains(subtask)) this.subtasks.add(subtask);
     }
 
     public boolean allSubtasksDone() {
@@ -35,4 +35,8 @@ public class Epic extends Task {
         return true;
     }
 
+    @Override
+    public int getID() {
+        return this.ID;
+    }
 }

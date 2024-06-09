@@ -2,26 +2,26 @@ package model;
 
 public class Subtask extends Task {
 
-    private int beEpic;
+    private final int ID = service.ID.SubTaskId;
     private Epic epic;
 
     public Subtask(Status status, String subTaskName, String description, Epic epic) {
         super(status, subTaskName, description);
-        setBeEpic(epic);
-        int ID = service.ID.SubTaskId;
         this.epic = epic;
-        int epicID = epic.getID();
-    }
-
-    public Epic getEpic() {
-        return epic;
-    }
-
-    public void setBeEpic(Epic epic) {
-        beEpic = epic.getID();
+        epic.addSubTask(this);
     }
 
     public int getEpicId() {
-        return epic.getID();
+        if (this.epic != null) return this.epic.getID();
+        else return 0; // или какое-то другое значение по умолчанию
+    }
+
+    public void setEpic(Epic epic) {
+        this.epic = epic;
+    }
+
+    @Override
+    public int getID() {
+        return this.ID;
     }
 }
