@@ -18,20 +18,17 @@ public class InMemoryTaskManager implements TaskManager {
     @Override
     public void createTask(Task task) {
         tasksMap.put(task.getID(), task);
-        ID.TaskId++;
     }
 
     @Override
     public void createEpic(Epic epic) {
         epicMap.put(epic.getID(), epic);
-        ID.EpicId++;
     }
 
     @Override
     public void createSubtask(Subtask subtask) {
         updateEpicStatus(getEpicById(subtask.getEpicId()));
         subTaskMap.put(subtask.getID(), subtask);
-        ID.SubTaskId++;
     }
 
     @Override
@@ -47,6 +44,15 @@ public class InMemoryTaskManager implements TaskManager {
     @Override
     public ArrayList<Subtask> getAllSubtask() {
         return new ArrayList<>(subTaskMap.values());
+    }
+
+    public void removeThis() {
+        deleteAllTasks();
+        deleteAllEpics();
+        deleteAllSubtasks();
+        // Удаляем ссылку на текущий объект
+        InMemoryTaskManager myInstance = this;
+        myInstance = null;
     }
 
     public void deleteAllTasks() {

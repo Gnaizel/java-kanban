@@ -2,13 +2,14 @@ package model;
 
 public class Subtask extends Task {
 
-    private final int ID = service.ID.SubTaskId;
+    private final int Id;
     private Epic epic;
 
     public Subtask(Status status, String subTaskName, String description, Epic epic) {
         super(status, subTaskName, description);
         this.epic = epic;
         epic.addSubTask(this);
+        this.Id = service.ID.SubTaskId;
     }
 
     public int getEpicId() {
@@ -22,6 +23,6 @@ public class Subtask extends Task {
 
     @Override
     public int getID() {
-        return this.ID;
+        return this.Id;
     }
 }

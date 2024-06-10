@@ -7,11 +7,12 @@ import java.util.ArrayList;
 public class Epic extends Task {
 
     private ArrayList<Subtask> subtasks;
-    private final int ID = service.ID.EpicId;
+    private final int Id;
 
     public Epic(String epicName, String epicDescription) {
         super(Status.NEW, epicName, epicDescription);
         this.subtasks = new ArrayList<>();
+        this.Id = service.ID.EpicId++;
     }
 
     public boolean subtasksNull() {
@@ -37,6 +38,6 @@ public class Epic extends Task {
 
     @Override
     public int getID() {
-        return this.ID;
+        return this.Id;
     }
 }

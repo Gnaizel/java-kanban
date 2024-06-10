@@ -54,6 +54,5 @@ public interface TaskManager {
 
     public List<Task> getHistory();
 
-
-
+    public void removeThis();
 }
