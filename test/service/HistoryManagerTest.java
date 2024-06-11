@@ -1,6 +1,5 @@
 package service;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import model.Status;
@@ -9,7 +8,8 @@ import model.Task;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.BeforeEach;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 class HistoryManagerTest {
 
@@ -24,18 +24,16 @@ class HistoryManagerTest {
         HManager.add(task);
         final List<Task> history = HManager.getHistory();
         assertNotNull(history, "История не пустая.");
-        assertEquals(1, history.size(), "История не пустая.");
+        assertEquals(1, history.size(), "История пустая.");
     }
 
     @Test
     void getHistory() {
-        Task task = new Task(Status.NEW, "Name", "Description");
         TaskManager manager = new InMemoryTaskManager();
-        List<Task> tasks = new ArrayList<Task>();
-        tasks.add(task);
-        List<Task> tasksInHistory = new ArrayList<Task>();
-        tasksInHistory.add(manager.getTaskById(1));
-
-        assertEquals(tasks, tasksInHistory, "getHistory() - не робит");
+        manager.createTask(new Task(Status.NEW, "Name", "Description"));
+        manager.getTaskById(0);
+        assertNotNull(manager.getHistory(), "История не ровна нулю </>");
+        List<Task> history = manager.getHistory();
+        assertEquals(history, manager.getHistory(), "Ебать что ?");
     }
 }

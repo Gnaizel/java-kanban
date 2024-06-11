@@ -15,6 +15,12 @@ public class InMemoryTaskManager implements TaskManager {
     private final HashMap<Integer, Subtask> subTaskMap = new HashMap<>();
     private final HistoryManager historyTask = new InMemoryHistoryManager();
 
+    public InMemoryTaskManager() {
+        deleteAllTasks();
+        deleteAllEpics();
+        deleteAllSubtasks();
+    } //Кароч это для того чтобы Id не ломалось Всё под контролем уберат много лишеного кода
+
     @Override
     public void createTask(Task task) {
         tasksMap.put(task.getID(), task);
@@ -32,7 +38,7 @@ public class InMemoryTaskManager implements TaskManager {
     }
 
     @Override
-    public ArrayList<Task> getAllTasks() {
+    public List<Task> getAllTasks() {
         return new ArrayList<>(tasksMap.values());
     }
 
@@ -44,15 +50,6 @@ public class InMemoryTaskManager implements TaskManager {
     @Override
     public ArrayList<Subtask> getAllSubtask() {
         return new ArrayList<>(subTaskMap.values());
-    }
-
-    public void removeThis() {
-        deleteAllTasks();
-        deleteAllEpics();
-        deleteAllSubtasks();
-        // Удаляем ссылку на текущий объект
-        InMemoryTaskManager myInstance = this;
-        myInstance = null;
     }
 
     public void deleteAllTasks() {

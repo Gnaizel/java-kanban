@@ -16,7 +16,7 @@ public interface TaskManager {
 
     public void createSubtask(Subtask subtask);
 
-    public ArrayList<Task> getAllTasks();
+    public List<Task> getAllTasks();
 
     public ArrayList<Epic> getAllEpic();
 
@@ -53,6 +53,4 @@ public interface TaskManager {
     public void updateEpicStatus(Epic epic);
 
     public List<Task> getHistory();
-
-    public void removeThis();
 }
