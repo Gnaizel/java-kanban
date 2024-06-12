@@ -4,6 +4,7 @@ import model.Epic;
 import model.Status;
 import model.Subtask;
 import model.Task;
+import static model.Communication.*;
 
 import java.util.HashMap;
 import java.util.ArrayList;
@@ -39,16 +40,28 @@ public class InMemoryTaskManager implements TaskManager {
 
     @Override
     public List<Task> getAllTasks() {
+        if (tasksMap.isEmpty()) {
+            noFound();
+            return null;
+        }
         return new ArrayList<>(tasksMap.values());
     }
 
     @Override
     public ArrayList<Epic> getAllEpic() {
+        if (epicMap.isEmpty()) {
+            noFound();
+            return null;
+        }
         return new ArrayList<>(epicMap.values());
     }
 
     @Override
     public ArrayList<Subtask> getAllSubtask() {
+        if (subTaskMap.isEmpty()) {
+            noFound();
+            return null;
+        }
         return new ArrayList<>(subTaskMap.values());
     }
 
@@ -92,35 +105,32 @@ public class InMemoryTaskManager implements TaskManager {
     }
 
     @Override
-    public Task getTaskById(int taskId) {
-        for (Task task : tasksMap.values()) {
-            if (task.getID() == taskId) {
-                historyTask.add(task);
-                return task;
-            }
+    public Task getTaskById(int id) {
+        if (tasksMap.containsKey(id)) {
+            historyTask.add(tasksMap.get(id));
+            return tasksMap.get(id);
         }
+        noFound();
         return null;
     }
 
     @Override
-    public Epic getEpicById(int taskId) {
-        for (Epic epic : epicMap.values()) {
-            if (epic.getID() == taskId) {
-                historyTask.add(epic);
-                return epic;
-            }
+    public Subtask getSubtaskById(int id) {
+        if (subTaskMap.containsKey(id)) {
+            historyTask.add(subTaskMap.get(id));
+            return subTaskMap.get(id);
         }
+        noFound();
         return null;
     }
 
     @Override
-    public Subtask getSubtaskById(int taskId) {
-        for (Subtask subtask : subTaskMap.values()) {
-            if (subtask.getID() == taskId) {
-                historyTask.add(subtask);
-                return subtask;
-            }
+    public Epic getEpicById(int id) {
+        if (epicMap.containsKey(id)) {
+            historyTask.add(epicMap.get(id));
+            return epicMap.get(id);
         }
+        noFound();
         return null;
     }
 
