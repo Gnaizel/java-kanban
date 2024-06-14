@@ -26,8 +26,8 @@ class IDTest {
         tasks = manager.getAllTasks();
 
         assertEquals(3, tasks.size(), "Неверное количество задач.");
-        assertEquals(manager.getTaskById(0), tasks.get(0), "Задачи не совпадают.");
-        assertEquals(manager.getTaskById(2), tasks.get(2), "Задачи не совпадают.");
+        assertEquals(manager.getTaskById(1), tasks.get(0), "Задачи не совпадают.");
+        assertEquals(manager.getTaskById(3), tasks.get(2), "Задачи не совпадают.");
     }
 
     @Test
@@ -35,10 +35,10 @@ class IDTest {
         TaskManager manager = new InMemoryTaskManager();
         manager.createTask(new Task(Status.NEW, "Test checkID", "Test checkID description"));
         manager.createTask(new Task(Status.IN_PROGRESS, "Test checkID1", "Test checkID description1"));
-        assertNull(manager.getTaskById(2));
+        assertNull(manager.getTaskById(3));
 
         manager.createTask(new Task(Status.DONE, "Test checkID2", "Test checkID description2"));
-        assertNotNull(manager.getTaskById(2));
+        assertNotNull(manager.getTaskById(3));
     }
 
 }

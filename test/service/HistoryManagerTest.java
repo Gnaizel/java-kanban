@@ -31,7 +31,7 @@ class HistoryManagerTest {
     void getHistory() {
         TaskManager manager = new InMemoryTaskManager();
         manager.createTask(new Task(Status.NEW, "Name", "Description"));
-        manager.getTaskById(0);
+        manager.getTaskById(1);
         assertNotNull(manager.getHistory(), "История не ровна нулю </>");
         List<Task> history = manager.getHistory();
         assertEquals(history, manager.getHistory(), "Ебать что ?");

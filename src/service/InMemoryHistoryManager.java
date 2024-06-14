@@ -1,7 +1,6 @@
 package service;
 
 import model.Task;
-import static model.Communication.*;
 
 import java.util.ArrayList;
 import java.util.List;

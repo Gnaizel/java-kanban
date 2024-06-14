@@ -9,7 +9,7 @@ public class Subtask extends Task {
         super(status, subTaskName, description);
         this.epic = epic;
         epic.addSubTask(this);
-        this.Id = service.ID.SubTaskId;
+        this.Id = ++service.ID.SubTaskId;
     }
 
     public int getEpicId() {

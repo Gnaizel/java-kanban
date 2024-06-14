@@ -11,7 +11,7 @@ public class Task {
         this.taskName = taskName;
         this.taskDescription = taskDescription;
         this.status = status;
-        this.Id = service.ID.TaskId++;
+        this.Id = ++service.ID.TaskId;
     }
 
     public void manageStatus(Status status) {

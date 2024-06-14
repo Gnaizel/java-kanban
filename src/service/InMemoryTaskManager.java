@@ -20,7 +20,7 @@ public class InMemoryTaskManager implements TaskManager {
         deleteAllTasks();
         deleteAllEpics();
         deleteAllSubtasks();
-    } //Кароч это для того чтобы Id не ломалось Всё под контролем уберат много лишеного кода
+    }
 
     @Override
     public void createTask(Task task) {
@@ -178,6 +178,6 @@ public class InMemoryTaskManager implements TaskManager {
 
     @Override
     public List<Task> getHistory() {
-        return (List<Task>) historyTask.getHistory();
+        return historyTask.getHistory();
     }
 }
