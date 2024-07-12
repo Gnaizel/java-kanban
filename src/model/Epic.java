@@ -6,7 +6,7 @@ import java.util.ArrayList;
 
 public class Epic extends Task {
 
-    private ArrayList<Subtask> subtasks;
+    private final ArrayList<Subtask> subtasks;
     private final int Id;
 
     public Epic(String epicName, String epicDescription) {
