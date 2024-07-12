@@ -1,5 +1,7 @@
 package model;
 
+import service.ID;
+
 public class Subtask extends Task {
 
     private final int Id;
@@ -9,7 +11,7 @@ public class Subtask extends Task {
         super(status, subTaskName, description);
         this.epic = epic;
         epic.addSubTask(this);
-        this.Id = ++service.ID.SubTaskId;
+        this.Id = ++ID.SubTaskId;
     }
 
     public int getEpicId() {

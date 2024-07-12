@@ -24,7 +24,6 @@ public class InMemoryTaskManager implements TaskManager {
 
     @Override
     public void createTask(Task task) {
-        ++service.ID.TaskId;
         tasksMap.put(task.getID(), task);
     }
 

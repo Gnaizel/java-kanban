@@ -1,5 +1,7 @@
 package model;
 
+import service.ID;
+
 import java.util.Objects;
 
 public class Task {
@@ -13,7 +15,7 @@ public class Task {
         this.taskName = taskName;
         this.taskDescription = taskDescription;
         this.status = status;
-        this.Id = service.ID.TaskId;
+        this.Id = ++ID.TaskId;
     }
 
     public void manageStatus(Status status) {
@@ -48,30 +50,4 @@ public class Task {
         return Id;
     }
 
-    @Override
-    public boolean equals(Object obj) {
-        if (this == obj) {
-            return true;
-        }
-        if (obj == null || getClass() != obj.getClass()) {
-            return false;
-        }
-        Task task = (Task) obj;
-        return Id == task.Id;
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(Id);
-    }
-
-    @Override
-    public String toString() {
-        return "Task{" +
-                "taskName='" + taskName + '\'' +
-                ", taskDescription='" + taskDescription + '\'' +
-                ", status=" + status +
-                ", Id=" + getID() +
-                "}\n";
-    }
 }

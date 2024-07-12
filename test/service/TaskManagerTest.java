@@ -85,8 +85,7 @@ class TaskManagerTest {
         assertEquals(manager.getEpicById(1), manager.getEpicById(1)
                 , "Задачи с ID:1 и ID:1 не эквивалентны !!!");
 
-        assertNotEquals(manager.getEpicById(1), manager.getEpicById(2)
-                , "Задачи с ID:1 и ID:2 эквивалентны !!!");
+        assertNotEquals(manager.getEpicById(1), manager.getEpicById(2));
     }
 
     @Test
