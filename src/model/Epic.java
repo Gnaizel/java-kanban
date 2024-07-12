@@ -1,7 +1,5 @@
 package model;
 
-import service.ID;
-
 import java.util.ArrayList;
 
 public class Epic extends Task {
@@ -26,6 +24,7 @@ public class Epic extends Task {
     public void addSubTask(Subtask subtask) {
         if (!subtasks.contains(subtask)) this.subtasks.add(subtask);
     }
+    public void removeSubTask(Subtask subtask) {this.subtasks.remove(subtask);}
 
     public boolean allSubtasksDone() {
         for (Task subtask : subtasks) {
@@ -40,4 +39,5 @@ public class Epic extends Task {
     public int getID() {
         return this.Id;
     }
+
 }

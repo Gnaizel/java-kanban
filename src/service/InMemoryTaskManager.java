@@ -24,6 +24,7 @@ public class InMemoryTaskManager implements TaskManager {
 
     @Override
     public void createTask(Task task) {
+        ++service.ID.TaskId;
         tasksMap.put(task.getID(), task);
     }
 
@@ -101,6 +102,7 @@ public class InMemoryTaskManager implements TaskManager {
     @Override
     public void deleteSubtask(Subtask subtask) {
         updateEpicStatus(getEpicById(subtask.getEpicId()));
+        getEpicById(subtask.getEpicId()).removeSubTask(subtask);
         subTaskMap.remove(subtask.getID());
     }
 

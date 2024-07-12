@@ -2,7 +2,9 @@ package service;
 
 import java.util.List;
 
+import model.Epic;
 import model.Status;
+import model.Subtask;
 import model.Task;
 
 import org.junit.jupiter.api.Test;
@@ -32,8 +34,23 @@ class HistoryManagerTest {
         TaskManager manager = new InMemoryTaskManager();
         manager.createTask(new Task(Status.NEW, "Name", "Description"));
         manager.getTaskById(1);
-        assertNotNull(manager.getHistory(), "История не ровна нулю </>");
+        assertNotNull(manager.getHistory(), "История ровна нулю </>");
         List<Task> history = manager.getHistory();
-        assertEquals(history, manager.getHistory(), "Ебать что ?");
+        assertEquals(history, manager.getHistory(), " что ?");
     }
+
+    @Test
+    void remove() {
+        TaskManager manager = new InMemoryTaskManager();
+        manager.createTask(new Task(Status.NEW, "Name", "Description"));
+        manager.createTask(new Task(Status.NEW, "Name", "Description"));
+        manager.createTask(new Task(Status.NEW, "Name", "Description"));
+        manager.getTaskById(1);
+        manager.getTaskById(1);
+        manager.getTaskById(2);
+        manager.getTaskById(3);
+        manager.getTaskById(3);
+        System.out.println(manager.getHistory());
+    }
+
 }

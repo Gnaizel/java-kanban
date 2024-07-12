@@ -89,4 +89,20 @@ class TaskManagerTest {
                 , "Задачи с ID:1 и ID:2 эквивалентны !!!");
     }
 
+    @Test
+    void subTaskRm() {
+        TaskManager manager = new InMemoryTaskManager();
+        manager.createEpic(new Epic("N","D"));
+        manager.createSubtask(new Subtask(Status.NEW,"Name", "D", manager.getEpicById(1)));
+        manager.createSubtask(new Subtask(Status.NEW,"Name", "D", manager.getEpicById(1)));
+        manager.createSubtask(new Subtask(Status.NEW,"Name", "D", manager.getEpicById(1)));
+        assertNotNull(manager.getSubtaskById(1));
+        assertNotNull(manager.getSubtaskById(2));
+        assertNotNull(manager.getSubtaskById(3));
+
+        manager.deleteEpic(manager.getEpicById(1));
+        assertNull(manager.getEpicById(1));
+
+    }
+
 }
