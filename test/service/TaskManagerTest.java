@@ -15,7 +15,9 @@ class TaskManagerTest {
     TaskManager manager = null;
 
     @BeforeEach
-    void createTaskManager() {manager = new InMemoryTaskManager();}
+    void createTaskManager() {
+        manager = new InMemoryTaskManager();
+    }
 
     @Test
     void shouldReturnTrueIfCreateAllView() {
@@ -91,10 +93,10 @@ class TaskManagerTest {
     @Test
     void subTaskRm() {
         TaskManager manager = new InMemoryTaskManager();
-        manager.createEpic(new Epic("N","D"));
-        manager.createSubtask(new Subtask(Status.NEW,"Name", "D", manager.getEpicById(1)));
-        manager.createSubtask(new Subtask(Status.NEW,"Name", "D", manager.getEpicById(1)));
-        manager.createSubtask(new Subtask(Status.NEW,"Name", "D", manager.getEpicById(1)));
+        manager.createEpic(new Epic("N", "D"));
+        manager.createSubtask(new Subtask(Status.NEW, "Name", "D", manager.getEpicById(1)));
+        manager.createSubtask(new Subtask(Status.NEW, "Name", "D", manager.getEpicById(1)));
+        manager.createSubtask(new Subtask(Status.NEW, "Name", "D", manager.getEpicById(1)));
         assertNotNull(manager.getSubtaskById(1));
         assertNotNull(manager.getSubtaskById(2));
         assertNotNull(manager.getSubtaskById(3));
