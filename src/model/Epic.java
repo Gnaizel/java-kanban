@@ -15,7 +15,7 @@ public class Epic extends Task {
         this.id = ++ID.EpicId;
     }
 
-    public boolean subtasksNull() {
+    public boolean hasNoSubtasks() {
         return subtasks.isEmpty();
     }
 
@@ -24,6 +24,7 @@ public class Epic extends Task {
     }
 
     public void addSubTask(Subtask subtask) {
+        if (subtask == null) return;
         if (!subtasks.contains(subtask)) this.subtasks.add(subtask);
     }
 
