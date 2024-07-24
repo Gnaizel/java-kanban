@@ -6,16 +6,16 @@ import java.util.ArrayList;
 
 public class Epic extends Task {
 
-    private ArrayList<Subtask> subtasks;
-    private final int Id;
+    private final ArrayList<Subtask> subtasks;
+    private final int id;
 
     public Epic(String epicName, String epicDescription) {
         super(Status.NEW, epicName, epicDescription);
         this.subtasks = new ArrayList<>();
-        this.Id = ++service.ID.EpicId;
+        this.id = ++ID.EpicId;
     }
 
-    public boolean subtasksNull() {
+    public boolean hasNoSubtasks() {
         return subtasks.isEmpty();
     }
 
@@ -24,7 +24,12 @@ public class Epic extends Task {
     }
 
     public void addSubTask(Subtask subtask) {
+        if (subtask == null) return;
         if (!subtasks.contains(subtask)) this.subtasks.add(subtask);
+    }
+
+    public void removeSubTask(Subtask subtask) {
+        this.subtasks.remove(subtask);
     }
 
     public boolean allSubtasksDone() {
@@ -38,6 +43,7 @@ public class Epic extends Task {
 
     @Override
     public int getID() {
-        return this.Id;
+        return this.id;
     }
+
 }

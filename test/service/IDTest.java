@@ -14,7 +14,9 @@ class IDTest {
     TaskManager manager;
 
     @BeforeEach
-    void createManager() {manager = new InMemoryTaskManager();}
+    void createManager() {
+        manager = new InMemoryTaskManager();
+    }
 
     @Test
     void addNewTaskForIdTest() {
