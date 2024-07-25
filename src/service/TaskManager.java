@@ -10,6 +10,8 @@ import java.util.List;
 
  public interface TaskManager {
 
+  void clearAll();
+
     void createTask(Task task);
 
     void createEpic(Epic epic);

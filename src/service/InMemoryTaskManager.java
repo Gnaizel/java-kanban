@@ -17,6 +17,11 @@ public class InMemoryTaskManager implements TaskManager {
     protected final HistoryManager historyTask = new InMemoryHistoryManager();
 
     public InMemoryTaskManager() {
+        clearAll();
+    }
+
+    @Override
+    public void clearAll() {
         deleteAllTasks();
         deleteAllEpics();
         deleteAllSubtasks();

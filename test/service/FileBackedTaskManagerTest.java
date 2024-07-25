@@ -4,6 +4,7 @@ import model.*;
 
 import java.io.File;
 import java.io.IOException;
+import java.nio.file.Path;
 import java.util.List;
 
 import org.junit.jupiter.api.Test;
@@ -16,8 +17,11 @@ class FileBackedTaskManagerTest {
 
     TaskManager manager = null;
 
+    public static final Path path = Path.of("src", "test", "resources", "taskManagerTest");
+    File file = new File(String.valueOf(path));
+
     @BeforeEach
-    void createTaskManager() throws IOException {manager = new FileBackedTaskManager(File.createTempFile("SRC", ".txt"));}
+    void createTaskManager() throws IOException {manager = new FileBackedTaskManager();}
 
     @Test
     void shouldReturnTrueIfCreateAllView() {

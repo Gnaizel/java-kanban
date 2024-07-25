@@ -17,11 +17,13 @@ import java.nio.file.Paths;
 public class FileBackedTaskManager extends InMemoryTaskManager {// Я НЕ ПОНИМАЮ ЧТО ДЕЛАТЬ НИЧЕГО НЕ РАБОТАЕТ
     private File file;
 
-    public FileBackedTaskManager(File file) {
-        this.file = file;
+    public FileBackedTaskManager() {
+        super();
+        createDirectory();
     }
 
     public void save() {
+        if (file == null) createDirectory();
         try (BufferedWriter writer = new BufferedWriter(new FileWriter(file, StandardCharsets.UTF_8))) {
             writer.write("id,type,name,status,description,epic");
             writer.newLine();
@@ -38,17 +40,25 @@ public class FileBackedTaskManager extends InMemoryTaskManager {// Я НЕ ПО�
         try {
             Path currentPath = Paths.get("").toAbsolutePath();
             Path filePath = currentPath.resolve("resources.txt");
-            this.file = filePath.toFile();
+            Files.createDirectories(filePath.getParent());
 
             if (!Files.exists(filePath)) {
                 Files.createFile(filePath);
                 System.out.println("Файл resources.txt создан в директории: " + currentPath);
+                this.file = filePath.toFile();
             } else {
-                System.out.println("Файл resources.txt уже существует.");
+                this.file = filePath.toFile();
             }
         } catch (IOException e) {
             throw new RuntimeException("Ошибка при создании файла: " + e.getMessage());
         }
+    }
+
+    @Override
+    public void clearAll() {
+        deleteAllTasks();
+        deleteAllEpics();
+        deleteAllSubtasks();
     }
 
     @Override
