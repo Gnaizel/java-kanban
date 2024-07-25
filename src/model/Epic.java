@@ -1,12 +1,10 @@
 package model;
 
-import service.ID;
-
 import java.util.ArrayList;
 
 public class Epic extends Task {
 
-    private ArrayList<Subtask> subtasks;
+    private final ArrayList<Subtask> subtasks;
     private final Type type;
     private final int Id;
 
