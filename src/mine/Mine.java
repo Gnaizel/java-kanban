@@ -26,13 +26,13 @@ public class Mine {
         printAllTasks(manager);
     }
     private static void printAllTasks(TaskManager manager) {
-        System.out.println("Задачи:");
+        System.out.println("Task:");
         for (Task task : manager.getAllTasks()) {
-            System.out.println(task);
+            System.out.println(task.toString());
         }
         System.out.println("Эпики:");
         for (Task epic : manager.getAllEpic()) {
-            System.out.println(epic);
+            System.out.println(epic.toString());
 
             for (Task subtask : manager.getAllSubtasksForEpic(epic.getID())) {
                 System.out.println("--> " + subtask);

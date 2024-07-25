@@ -7,12 +7,14 @@ import java.util.ArrayList;
 public class Epic extends Task {
 
     private ArrayList<Subtask> subtasks;
+    private final Type type;
     private final int Id;
 
     public Epic(String epicName, String epicDescription) {
         super(Status.NEW, epicName, epicDescription);
         this.subtasks = new ArrayList<>();
         this.Id = ++service.ID.EpicId;
+        this.type = Type.EPIC;
     }
 
     public boolean subtasksNull() {

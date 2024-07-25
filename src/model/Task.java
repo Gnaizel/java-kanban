@@ -2,6 +2,7 @@ package model;
 
 public class Task {
 
+    private final Type type;
     private String taskName;
     private String taskDescription;
     private Status status;
@@ -12,6 +13,7 @@ public class Task {
         this.taskDescription = taskDescription;
         this.status = status;
         this.Id = ++service.ID.TaskId;
+        this.type = Type.TASK;
     }
 
     public void manageStatus(Status status) {
@@ -46,4 +48,7 @@ public class Task {
         return Id;
     }
 
+    public Type getType() {
+        return type;
+    }
 }

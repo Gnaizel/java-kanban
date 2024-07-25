@@ -2,6 +2,7 @@ package model;
 
 public class Subtask extends Task {
 
+    private final Type type;
     private final int Id;
     private Epic epic;
 
@@ -10,6 +11,7 @@ public class Subtask extends Task {
         this.epic = epic;
         epic.addSubTask(this);
         this.Id = ++service.ID.SubTaskId;
+        this.type = Type.SUBTASK;
     }
 
     public int getEpicId() {
