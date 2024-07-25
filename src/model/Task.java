@@ -51,4 +51,15 @@ public class Task {
     public Type getType() {
         return type;
     }
+
+    @Override
+    public String toString() {
+        return "Task{" +
+                "type=" + type +
+                ", taskName='" + taskName + '\'' +
+                ", taskDescription='" + taskDescription + '\'' +
+                ", status=" + status +
+                ", Id=" + Id +
+                '}';
+    }
 }

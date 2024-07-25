@@ -10,9 +10,12 @@ import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 
-public class FileBackedTaskManager extends InMemoryTaskManager {
-    private final File file;
+public class FileBackedTaskManager extends InMemoryTaskManager {// Я НЕ ПОНИМАЮ ЧТО ДЕЛАТЬ НИЧЕГО НЕ РАБОТАЕТ
+    private File file;
 
     public FileBackedTaskManager(File file) {
         this.file = file;
@@ -22,20 +25,29 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
         try (BufferedWriter writer = new BufferedWriter(new FileWriter(file, StandardCharsets.UTF_8))) {
             writer.write("id,type,name,status,description,epic");
             writer.newLine();
-
             for (Task task : tasksMap.values()) {
-                String line = String.format("%d,%s,%s,%s,%s,%d",
-                        task.getID(),
-                        task.getType(),
-                        task.getTaskName(),
-                        task.getStatus(),
-                        task.getTaskDescription(),
-                        (task.getClass() == Subtask.class) ? ((Subtask) task).getEpicId() : -1);
-                writer.write(line);
+                writer.write(task.toString());
                 writer.newLine();
             }
         } catch (IOException e) {
             System.out.println("Ошибка при сохранении");
+        }
+    }
+
+    public void createDirectory() {
+        try {
+            Path currentPath = Paths.get("").toAbsolutePath();
+            Path filePath = currentPath.resolve("resources.txt");
+            this.file = filePath.toFile();
+
+            if (!Files.exists(filePath)) {
+                Files.createFile(filePath);
+                System.out.println("Файл resources.txt создан в директории: " + currentPath);
+            } else {
+                System.out.println("Файл resources.txt уже существует.");
+            }
+        } catch (IOException e) {
+            throw new RuntimeException("Ошибка при создании файла: " + e.getMessage());
         }
     }
 
@@ -124,3 +136,4 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
     }
 
 }
+
