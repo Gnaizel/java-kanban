@@ -17,9 +17,6 @@ class FileBackedTaskManagerTest {
 
     TaskManager manager = null;
 
-    public static final Path path = Path.of("src", "test", "resources", "taskManagerTest");
-    File file = new File(String.valueOf(path));
-
     @BeforeEach
     void createTaskManager() throws IOException {manager = new FileBackedTaskManager();}
 

@@ -5,10 +5,7 @@ import model.Status;
 import model.Subtask;
 import model.Task;
 
-import java.io.BufferedWriter;
-import java.io.File;
-import java.io.FileWriter;
-import java.io.IOException;
+import java.io.*;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -28,6 +25,14 @@ public class FileBackedTaskManager extends InMemoryTaskManager {// Я НЕ ПО�
             writer.write("id,type,name,status,description,epic");
             writer.newLine();
             for (Task task : tasksMap.values()) {
+                writer.write(task.toString());
+                writer.newLine();
+            }
+            for (Epic task : epicMap.values()) {
+                writer.write(task.toString());
+                writer.newLine();
+            }
+            for (Subtask task : subTaskMap.values()) {
                 writer.write(task.toString());
                 writer.newLine();
             }
@@ -51,6 +56,27 @@ public class FileBackedTaskManager extends InMemoryTaskManager {// Я НЕ ПО�
             }
         } catch (IOException e) {
             throw new RuntimeException("Ошибка при создании файла: " + e.getMessage());
+        }
+    }
+
+    public void unpackFile(File file) {
+        try (BufferedReader reader = new BufferedReader(new FileReader(file, StandardCharsets.UTF_8))) {
+            while (reader.ready()) {
+                String line = reader.readLine();
+                String[] split = line.split(",");
+                switch (split[1]) {
+                    case "TASK":
+                        tasksMap.put(Integer.valueOf(split[0]), new Task(Status.valueOf(split[3]),split[2], split[4]));
+                    case "SUBTASK":
+                        subTaskMap.put(Integer.valueOf(split[0]),
+                                new Subtask(Status.valueOf(split[3]),split[2], split[4],
+                                        epicMap.get(Integer.valueOf(split[5]))));
+                    case "EPIC":
+                        epicMap.put(Integer.valueOf(split[0]), new Epic(split[2], split[4]));
+                }
+            }
+        } catch (IOException e) {
+            throw new RuntimeException(e);
         }
     }
 

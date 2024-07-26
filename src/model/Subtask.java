@@ -27,4 +27,14 @@ public class Subtask extends Task {
     public int getID() {
         return this.Id;
     }
+
+    @Override
+    public String toString() {
+        return Id +
+                ", " + type +
+                ", " + getTaskName() +
+                ", " + getStatus() +
+                ", " + getTaskDescription() +
+                ", " + getEpicId();
+    }
 }
