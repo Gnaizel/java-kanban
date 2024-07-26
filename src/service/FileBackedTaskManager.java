@@ -13,6 +13,7 @@ import java.nio.file.Paths;
 
 public class FileBackedTaskManager extends InMemoryTaskManager {// Я НЕ ПОНИМАЮ ЧТО ДЕЛАТЬ НИЧЕГО НЕ РАБОТАЕТ
     private File file;
+    private boolean itFileNew = false;
 
     public FileBackedTaskManager() {
         super();
@@ -51,34 +52,61 @@ public class FileBackedTaskManager extends InMemoryTaskManager {// Я НЕ ПО�
                 Files.createFile(filePath);
                 System.out.println("Файл resources.txt создан в директории: " + currentPath);
                 this.file = filePath.toFile();
+                itFileNew = true;
             } else {
                 this.file = filePath.toFile();
+                unpackFile();
+                itFileNew = false;
             }
         } catch (IOException e) {
+            itFileNew = true;
             throw new RuntimeException("Ошибка при создании файла: " + e.getMessage());
         }
     }
 
-    public void unpackFile(File file) {
-        try (BufferedReader reader = new BufferedReader(new FileReader(file, StandardCharsets.UTF_8))) {
-            while (reader.ready()) {
-                String line = reader.readLine();
-                String[] split = line.split(",");
-                switch (split[1]) {
+    public void unpackFile() {
+        if (itFileNew) return;
+        try (BufferedReader reader = new BufferedReader(new FileReader(this.file, StandardCharsets.UTF_8))) {
+            String line;
+            reader.readLine();
+            while ((line = reader.readLine()) != null) {
+                if (line.trim().isEmpty()) {
+                    continue; // Пропустить пустые строки
+                }
+                String[] split = line.split(", ");
+
+                // Проверяем, что строка содержит все необходимые параметры
+                if (split.length < 5) {
+                    continue; // Пропустить строки, которые не имеют достаточного количества элементов
+                }
+
+                Integer id = Integer.valueOf(split[0]);
+                String type = split[1];
+                String name = split[2];
+                Status status = Status.valueOf(split[3]);
+                String description = split[4];
+                String epicIdString = split.length > 5 ? split[5] : null; // Возможно, epicId отсутствует
+
+                switch (type) {
                     case "TASK":
-                        tasksMap.put(Integer.valueOf(split[0]), new Task(Status.valueOf(split[3]),split[2], split[4]));
+                        tasksMap.put(id, new Task(status, name, description));
+                        break;
                     case "SUBTASK":
-                        subTaskMap.put(Integer.valueOf(split[0]),
-                                new Subtask(Status.valueOf(split[3]),split[2], split[4],
-                                        epicMap.get(Integer.valueOf(split[5]))));
+                        if (epicIdString != null) {
+                            int epicId = Integer.parseInt(epicIdString);
+                            subTaskMap.put(id, new Subtask(status, name, description, epicMap.get(epicId)));
+                        }
+                        break;
                     case "EPIC":
-                        epicMap.put(Integer.valueOf(split[0]), new Epic(split[2], split[4]));
+                        epicMap.put(id, new Epic(name, description));
+                        break;
                 }
             }
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
     }
+
 
     @Override
     public void clearAll() {
