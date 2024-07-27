@@ -2,9 +2,6 @@ package service;
 
 import model.*;
 
-import java.io.File;
-import java.io.IOException;
-import java.nio.file.Path;
 import java.util.List;
 
 import org.junit.jupiter.api.Test;
@@ -18,7 +15,7 @@ class FileBackedTaskManagerTest {
     TaskManager manager = null;
 
     @BeforeEach
-    void createTaskManager() throws IOException {manager = new FileBackedTaskManager();}
+    void createTaskManager() {manager = new FileBackedTaskManager();}
 
     @Test
     void shouldReturnTrueIfCreateAllView() {

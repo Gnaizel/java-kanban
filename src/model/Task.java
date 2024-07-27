@@ -16,6 +16,25 @@ public class Task {
         this.type = Type.TASK;
     }
 
+    public Task(Status status, String taskName, String taskDescription, int Id) {
+        this.taskName = taskName;
+        this.taskDescription = taskDescription;
+        this.status = status;
+        this.Id = Id;
+        this.type = Type.TASK;
+    }
+
+        public static Task fromString(String str) {
+            String[] line = str.split(", ");
+            if (line.length < 5) {
+                throw new IllegalArgumentException("Недостаточно параметров для создания задачи");
+            }
+            Status status = Status.valueOf(line[3]);
+            String name = line[2];
+            String description = line[4];
+            return new Task(status, name, description, Integer.parseInt(line[0]));
+        }
+
     public void manageStatus(Status status) {
         this.status = status;
     }

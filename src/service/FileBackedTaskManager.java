@@ -13,7 +13,6 @@ import java.nio.file.Paths;
 
 public class FileBackedTaskManager extends InMemoryTaskManager {// Я НЕ ПОНИМАЮ ЧТО ДЕЛАТЬ НИЧЕГО НЕ РАБОТАЕТ
     private File file;
-    private boolean itFileNew = false;
 
     public FileBackedTaskManager() {
         super();
@@ -52,53 +51,40 @@ public class FileBackedTaskManager extends InMemoryTaskManager {// Я НЕ ПО�
                 Files.createFile(filePath);
                 System.out.println("Файл resources.txt создан в директории: " + currentPath);
                 this.file = filePath.toFile();
-                itFileNew = true;
             } else {
                 this.file = filePath.toFile();
                 unpackFile();
-                itFileNew = false;
             }
         } catch (IOException e) {
-            itFileNew = true;
             throw new RuntimeException("Ошибка при создании файла: " + e.getMessage());
         }
     }
 
     public void unpackFile() {
-        if (itFileNew) return;
+        if (file == null) return;
         try (BufferedReader reader = new BufferedReader(new FileReader(this.file, StandardCharsets.UTF_8))) {
             String line;
             reader.readLine();
             while ((line = reader.readLine()) != null) {
                 if (line.trim().isEmpty()) {
-                    continue; // Пропустить пустые строки
+                    continue;
                 }
                 String[] split = line.split(", ");
 
-                // Проверяем, что строка содержит все необходимые параметры
                 if (split.length < 5) {
-                    continue; // Пропустить строки, которые не имеют достаточного количества элементов
+                    continue;
                 }
 
-                Integer id = Integer.valueOf(split[0]);
                 String type = split[1];
-                String name = split[2];
-                Status status = Status.valueOf(split[3]);
-                String description = split[4];
-                String epicIdString = split.length > 5 ? split[5] : null; // Возможно, epicId отсутствует
-
                 switch (type) {
                     case "TASK":
-                        tasksMap.put(id, new Task(status, name, description));
+                        tasksMap.put(getIdTaskForLine(line), Task.fromString(line));
                         break;
                     case "SUBTASK":
-                        if (epicIdString != null) {
-                            int epicId = Integer.parseInt(epicIdString);
-                            subTaskMap.put(id, new Subtask(status, name, description, epicMap.get(epicId)));
-                        }
+                            subTaskMap.put(getIdTaskForLine(line), Subtask.fromString(line, epicMap));
                         break;
                     case "EPIC":
-                        epicMap.put(id, new Epic(name, description));
+                        epicMap.put(getIdTaskForLine(line), Epic.fromString(line));
                         break;
                 }
             }
@@ -107,6 +93,10 @@ public class FileBackedTaskManager extends InMemoryTaskManager {// Я НЕ ПО�
         }
     }
 
+    public int getIdTaskForLine(String line) {
+        String[] split = line.split(", ");
+        return Integer.parseInt(split[0]);
+    }
 
     @Override
     public void clearAll() {

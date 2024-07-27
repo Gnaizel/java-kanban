@@ -15,6 +15,13 @@ public class Epic extends Task {
         this.type = Type.EPIC;
     }
 
+    public Epic(Status status, String epicName, String epicDescription, int id) {
+        super(status, epicName, epicDescription);
+        this.subtasks = new ArrayList<>();
+        this.Id = id;
+        this.type = Type.EPIC;
+    }
+
     public boolean subtasksNull() {
         return subtasks.isEmpty();
     }
@@ -34,6 +41,11 @@ public class Epic extends Task {
             }
         }
         return true;
+    }
+
+    public static Epic fromString(String epicString) {
+        String[] split = epicString.split(", ");
+        return new Epic(Status.valueOf(split[3]), split[2], split[4], Integer.parseInt(split[0]));
     }
 
     @Override
