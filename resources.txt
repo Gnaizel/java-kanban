@@ -4,5 +4,3 @@ id,type,name,status,description,epic
 3, TASK, Name1, IN_PROGRESS, Description1
 4, TASK, Name2, NEW, Description2
 5, TASK, Test addNewTask, NEW, Test addNewTask description
-1, EPIC, Name1, IN_PROGRESS, Description1, [1, SUBTASK, Name, IN_PROGRESS, description, 1]
-1, SUBTASK, Name, IN_PROGRESS, description, 1
