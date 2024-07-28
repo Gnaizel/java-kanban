@@ -22,7 +22,7 @@ public class Epic extends Task {
         this.type = Type.EPIC;
     }
 
-    public boolean subtasksNull() {
+    public boolean hasNoSubtasks() {
         return subtasks.isEmpty();
     }
 
@@ -46,6 +46,10 @@ public class Epic extends Task {
     public static Epic fromString(String epicString) {
         String[] split = epicString.split(", ");
         return new Epic(Status.valueOf(split[3]), split[2], split[4], Integer.parseInt(split[0]));
+    }
+
+    public void removeSubTask(Subtask subtask) {
+        subtasks.remove(subtask);
     }
 
     @Override

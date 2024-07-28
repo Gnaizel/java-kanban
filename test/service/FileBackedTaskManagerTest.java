@@ -30,7 +30,7 @@ class FileBackedTaskManagerTest {
         assertNotNull(manager.getTaskById(1));
         assertNotNull(manager.getEpicById(1));
         assertNotNull(manager.getSubtaskById(1));
-    }
+    } // не действителен
 
     @Test
     void checkCorrectWorkEpics() {
@@ -57,7 +57,7 @@ class FileBackedTaskManagerTest {
         assertNotNull(tasks, "Задачи не возвращаются.");
         assertEquals(1, tasks.size(), "Неверное количество задач.");
         assertEquals(manager.getTaskById(1), tasks.getFirst(), "Задачи не совпадают.");
-    }
+    } // не действителен
 
     @Test
     void shouldReturnTrueIfEquivalentTests() {
