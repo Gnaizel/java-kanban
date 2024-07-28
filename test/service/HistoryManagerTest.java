@@ -16,7 +16,9 @@ class HistoryManagerTest {
     HistoryManager HManager;
 
     @BeforeEach
-    void createHistoryManager() {HManager = new InMemoryHistoryManager();}
+    void createHistoryManager() {
+        HManager = new InMemoryHistoryManager();
+    }
 
     @Test
     void add() {
@@ -32,8 +34,23 @@ class HistoryManagerTest {
         TaskManager manager = new InMemoryTaskManager();
         manager.createTask(new Task(Status.NEW, "Name", "Description"));
         manager.getTaskById(1);
-        assertNotNull(manager.getHistory(), "История не ровна нулю </>");
+        assertNotNull(manager.getHistory(), "История ровна нулю </>");
         List<Task> history = manager.getHistory();
-        assertEquals(history, manager.getHistory(), "Ебать что ?");
+        assertEquals(history, manager.getHistory(), " что ?");
     }
+
+    @Test
+    void remove() {
+        TaskManager manager = new InMemoryTaskManager();
+        manager.createTask(new Task(Status.NEW, "Name", "Description"));
+        manager.createTask(new Task(Status.NEW, "Name", "Description"));
+        manager.createTask(new Task(Status.NEW, "Name", "Description"));
+        manager.getTaskById(1);
+        manager.getTaskById(1);
+        manager.getTaskById(2);
+        manager.getTaskById(3);
+        manager.getTaskById(3);
+        System.out.println(manager.getHistory());
+    }
+
 }

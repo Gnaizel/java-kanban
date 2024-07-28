@@ -4,6 +4,7 @@ import model.Epic;
 import model.Status;
 import model.Subtask;
 import model.Task;
+
 import static model.Communication.*;
 
 import java.util.HashMap;
@@ -53,7 +54,7 @@ public class InMemoryTaskManager implements TaskManager {
     }
 
     @Override
-    public ArrayList<Epic> getAllEpic() {
+    public List<Epic> getAllEpic() {
         if (epicMap.isEmpty()) {
             noFound();
             return null;
@@ -62,7 +63,7 @@ public class InMemoryTaskManager implements TaskManager {
     }
 
     @Override
-    public ArrayList<Subtask> getAllSubtask() {
+    public List<Subtask> getAllSubtask() {
         if (subTaskMap.isEmpty()) {
             noFound();
             return null;
@@ -106,6 +107,7 @@ public class InMemoryTaskManager implements TaskManager {
     @Override
     public void deleteSubtask(Subtask subtask) {
         updateEpicStatus(getEpicById(subtask.getEpicId()));
+        getEpicById(subtask.getEpicId()).removeSubTask(subtask);
         subTaskMap.remove(subtask.getID());
     }
 
@@ -156,7 +158,7 @@ public class InMemoryTaskManager implements TaskManager {
     }
 
     @Override
-    public ArrayList<Subtask> getAllSubtasksForEpic(int id) {
+    public List<Subtask> getAllSubtasksForEpic(int id) {
         for (Epic epic : epicMap.values()) {
             if (epic.getID() == id) {
                 return new ArrayList<>(subTaskMap.values());
@@ -172,7 +174,7 @@ public class InMemoryTaskManager implements TaskManager {
 
     @Override
     public void updateEpicStatus(Epic epic) {
-        if (epic.subtasksNull()) {
+        if (epic.hasNoSubtasks()) {
             epic.setStatus(Status.NEW);
         } else if (epic.allSubtasksDone()) {
             epic.setStatus(Status.DONE);
