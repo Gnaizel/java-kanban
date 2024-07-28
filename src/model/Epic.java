@@ -6,19 +6,19 @@ public class Epic extends Task {
 
     private final ArrayList<Subtask> subtasks;
     private final Type type;
-    private final int Id;
+    private final int id;
 
     public Epic(String epicName, String epicDescription) {
         super(Status.NEW, epicName, epicDescription);
         this.subtasks = new ArrayList<>();
-        this.Id = ++service.ID.EpicId;
+        this.id = ++service.ID.EpicId;
         this.type = Type.EPIC;
     }
 
     public Epic(Status status, String epicName, String epicDescription, int id) {
         super(status, epicName, epicDescription);
         this.subtasks = new ArrayList<>();
-        this.Id = id;
+        this.id = id;
         this.type = Type.EPIC;
     }
 
@@ -54,7 +54,7 @@ public class Epic extends Task {
 
     @Override
     public String toString() {
-        return Id +
+        return id +
                 ", " + type +
                 ", " + getTaskName() +
                 ", " + getStatus() +
@@ -64,6 +64,6 @@ public class Epic extends Task {
 
     @Override
     public int getID() {
-        return this.Id;
+        return this.id;
     }
 }

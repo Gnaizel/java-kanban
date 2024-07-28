@@ -3,24 +3,24 @@ package model;
 public class Task {
 
     private final Type type;
-    private String taskName;
+    private final String taskName;
     private String taskDescription;
     private Status status;
-    private final int Id;
+    private final int id;
 
     public Task(Status status, String taskName, String taskDescription) {
         this.taskName = taskName;
         this.taskDescription = taskDescription;
         this.status = status;
-        this.Id = ++service.ID.TaskId;
+        this.id = ++service.ID.TaskId;
         this.type = Type.TASK;
     }
 
-    public Task(Status status, String taskName, String taskDescription, int Id) {
+    public Task(Status status, String taskName, String taskDescription, int id) {
         this.taskName = taskName;
         this.taskDescription = taskDescription;
         this.status = status;
-        this.Id = Id;
+        this.id = id;
         this.type = Type.TASK;
     }
 
@@ -35,24 +35,12 @@ public class Task {
             return new Task(status, name, description, Integer.parseInt(line[0]));
         }
 
-    public void manageStatus(Status status) {
-        this.status = status;
-    }
-
     public String getTaskName() {
         return taskName;
     }
 
-    public void setTaskName(String taskName) {
-        this.taskName = taskName;
-    }
-
     public String getTaskDescription() {
         return taskDescription;
-    }
-
-    public void setTaskDescription(String taskDescription) {
-        this.taskDescription = taskDescription;
     }
 
     public Status getStatus() {
@@ -64,16 +52,12 @@ public class Task {
     }
 
     public int getID() {
-        return Id;
-    }
-
-    public Type getType() {
-        return type;
+        return id;
     }
 
     @Override
     public String toString() {
-        return Id +
+        return id +
                 ", " + type +
                 ", " + taskName +
                 ", " + status +

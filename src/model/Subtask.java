@@ -1,19 +1,18 @@
 package model;
 
-import java.util.HashMap;
 import java.util.Map;
 
 public class Subtask extends Task {
 
     private final Type type;
-    private final int Id;
-    private Epic epic;
+    private final int id;
+    private final Epic epic;
 
     public Subtask(Status status, String subTaskName, String description, Epic epic) {
         super(status, subTaskName, description);
         this.epic = epic;
         epic.addSubTask(this);
-        this.Id = ++service.ID.SubTaskId;
+        this.id = ++service.ID.SubTaskId;
         this.type = Type.SUBTASK;
     }
 
@@ -21,17 +20,13 @@ public class Subtask extends Task {
         super(status, subTaskName, description);
         this.epic = epic;
         epic.addSubTask(this);
-        this.Id = ++service.ID.SubTaskId;
+        this.id = id;
         this.type = Type.SUBTASK;
     }
 
     public int getEpicId() {
         if (this.epic != null) return this.epic.getID();
         else return 0; // или какое-то другое значение по умолчанию
-    }
-
-    public void setEpic(Epic epic) {
-        this.epic = epic;
     }
 
     public static Subtask fromString(String line, Map<Integer, Epic> epics) {
@@ -44,12 +39,12 @@ public class Subtask extends Task {
 
     @Override
     public int getID() {
-        return this.Id;
+        return this.id;
     }
 
     @Override
     public String toString() {
-        return Id +
+        return id +
                 ", " + type +
                 ", " + getTaskName() +
                 ", " + getStatus() +
