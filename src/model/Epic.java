@@ -43,11 +43,6 @@ public class Epic extends Task {
         return true;
     }
 
-    public static Epic fromString(String epicString) {
-        String[] split = epicString.split(", ");
-        return new Epic(Status.valueOf(split[3]), split[2], split[4], Integer.parseInt(split[0]));
-    }
-
     public void removeSubTask(Subtask subtask) {
         subtasks.remove(subtask);
     }

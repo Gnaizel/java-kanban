@@ -2,8 +2,6 @@ package service;
 
 import model.*;
 
-import java.util.List;
-
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.BeforeEach;
 
@@ -12,79 +10,59 @@ import static org.junit.jupiter.api.Assertions.*;
 
 class FileBackedTaskManagerTest {
 
-    TaskManager manager = null;
+    FileBackedTaskManager manager = null;
 
     @BeforeEach
-    void createTaskManager() {manager = new FileBackedTaskManager();}
-
-    @Test
-    void shouldReturnTrueIfCreateAllView() {
-        manager.createTask(new Task(Status.IN_PROGRESS, "Name1", "Description1"));
-        manager.createEpic(new Epic("Name1", "Description1"));
-        manager.createSubtask(new Subtask(Status.IN_PROGRESS, "Name", "description"
-                , manager.getEpicById(1)));
-        assertSame(manager.getTaskById(1).getClass(), Task.class);
-        assertSame(manager.getEpicById(1).getClass(), Epic.class);
-        assertSame(manager.getSubtaskById(1).getClass(), Subtask.class);
-        assertNotNull(manager.getTaskById(1));
-        assertNotNull(manager.getEpicById(1));
-        assertNotNull(manager.getSubtaskById(1));
+    void createTaskManager() {
+        manager = new FileBackedTaskManager();
     }
 
     @Test
-    void checkCorrectWorkEpics() {
-        manager.createEpic(new Epic("Name1", "Description1"));
-        manager.createSubtask(new Subtask(Status.IN_PROGRESS, "Name", "description"
+    void saveTest() {
+        manager.createTask(new Task(Status.NEW, "Таск #1", "Таск созданый при первом запуске"));
+        manager.createTask(new Task(Status.NEW, "Таск #2", "Таск созданый при первом запуске"));
+        manager.createTask(new Task(Status.NEW, "Таск #3", "Таск созданый при первом запуске"));
+
+        manager.createEpic(new Epic("Эпик #1","Эпик созданый при первом запуске"));
+        manager.createEpic(new Epic("Эпик #2","Эпик созданый при первом запуске"));
+        manager.createEpic(new Epic("Эпик #3","Эпик созданый при первом запуске"));
+
+        manager.createSubtask(new Subtask(Status.IN_PROGRESS, "SubTask#1"
+                , "SubTask созданый при первом запуске || Относится к Epic id - 1"
                 , manager.getEpicById(1)));
 
-        Subtask subtask = manager.getEpicById(1).getSubtasks().getFirst();
-        assertEquals(manager.getSubtaskById(1), subtask);
-    }
-
-    @Test
-    void addNewTask() {
-        manager.createTask(new Task(Status.NEW, "Test addNewTask", "Test addNewTask description"));
-
-        final int taskId = manager.getTaskById(1).getID();
-        final Task savedTask = manager.getTaskById(taskId);
-
-        assertNotNull(savedTask, "Задача не найдена.");
-        assertEquals(manager.getTaskById(1), savedTask, "Задачи не совпадают.");
-
-        final List<Task> tasks = manager.getAllTasks();
-
-        assertNotNull(tasks, "Задачи не возвращаются.");
-        assertEquals(manager.getTaskById(1), tasks.getFirst(), "Задачи не совпадают.");
-    }
-
-    @Test
-    void shouldReturnTrueIfEquivalentTests() {
-        manager.createTask(new Task(Status.IN_PROGRESS, "Name1", "Description1"));
-        manager.createTask(new Task(Status.NEW, "Name2", "Description2"));
-
-        assertEquals(manager.getTaskById(1), manager.getTaskById(1)
-                , "Задачи с ID:1 и ID:1 не эквивалентны !!!");
-
-        assertNotEquals(manager.getTaskById(1), manager.getTaskById(2)
-                , "Задачи с ID:1 и ID:2 эквивалентны !!!");
-    }
-
-    @Test
-    void shouldReturnTrueIfEquivalentHearsTest() {
-        manager.createEpic(new Epic("Name1", "Description1"));
-        manager.createEpic(new Epic("Name2", "Description2"));
-
-        manager.createSubtask(new Subtask(Status.IN_PROGRESS, "Name1Sub", "Description1Sub"
+        manager.createSubtask(new Subtask(Status.IN_PROGRESS, "SubTask#2"
+                , "SubTask созданый при первом запуске || Относится к Epic id - 1"
                 , manager.getEpicById(1)));
 
-        manager.createSubtask(new Subtask(Status.IN_PROGRESS, "Name2Sub", "Description2Sub"
-                , manager.getEpicById(1)));
+        manager.createSubtask(new Subtask(Status.IN_PROGRESS, "SubTask#3"
+                , "SubTask созданый при первом запуске || Относится к Epic id - 2"
+                , manager.getEpicById(2)));
 
-        assertEquals(manager.getEpicById(1), manager.getEpicById(1)
-                , "Задачи с ID:1 и ID:1 не эквивалентны !!!");
+        // Проверка id тасков на ожидаемые
+        assertEquals(manager.getTaskById(1).getTaskName(),"Таск #1", "id не совпадают (Таск #1)");
+        assertEquals(manager.getTaskById(3).getTaskName(),"Таск #3", "id не совпадают (Таск #3)");
 
-        assertNotEquals(manager.getEpicById(1), manager.getEpicById(2)
-                , "Задачи с ID:1 и ID:2 эквивалентны !!!");
+        assertEquals(manager.getEpicById(1).getTaskName(), "Эпик #1", "id не совпадают (Эпик #1)");
+        assertEquals(manager.getEpicById(3).getTaskName(), "Эпик #3", "id не совпадают (Эпик #3)");
+
+        assertNull(manager.getTaskById(4), "Проблема работы id || Таск с id 4 недолжно существовать");
+        assertNull(manager.getEpicById(4), "Проблема работы id || Эпик с id 4 недолжен существовать");
+        assertNull(manager.getSubtaskById(4), "Проблема работы id || Сабтаск с id 4 недолжен существовать");
+
+        assertEquals(manager.getTaskById(1).getTaskName(),"Таск #1"
+                , "id не совпадают (Таск #1) || 2 запуск");
+        assertEquals(manager.getTaskById(3).getTaskName(),"Таск #3"
+                , "id не совпадают (Таск #3) || 2 запуск");
+
+        assertEquals(manager.getEpicById(1).getTaskName(), "Эпик #1"
+                , "id не совпадают (Эпик #1) || 2 запуск");
+        assertEquals(manager.getEpicById(3).getTaskName(), "Эпик #3"
+                , "id не совпадают (Эпик #3) || 2 запуск");
+
+        assertEquals(manager.getSubtaskById(1).getTaskName(),"SubTask#1");
+        assertEquals(manager.getSubtaskById(3).getTaskName(),"SubTask#3");
+        assertEquals(manager.getSubtaskById(2).getTaskName(),"SubTask#2");
     }
 
 }

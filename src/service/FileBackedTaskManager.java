@@ -11,16 +11,16 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 
-public class FileBackedTaskManager extends InMemoryTaskManager{
+public class FileBackedTaskManager extends InMemoryTaskManager {
     private File file;
 
     public FileBackedTaskManager() {
         super();
-        createDirectory();
+        createResourcesTxt();
     }
 
     public void save() {
-        if (file == null) createDirectory();
+        if (file == null) createResourcesTxt();
         try (BufferedWriter writer = new BufferedWriter(new FileWriter(file, StandardCharsets.UTF_8))) {
             writer.write("id,type,name,status,description,epic");
             writer.newLine();
@@ -28,12 +28,12 @@ public class FileBackedTaskManager extends InMemoryTaskManager{
                 writer.write(task.toString());
                 writer.newLine();
             }
-            for (Epic task : epicMap.values()) {
-                writer.write(task.toString());
+            for (Epic epic : epicMap.values()) {
+                writer.write(epic.toString());
                 writer.newLine();
             }
-            for (Subtask task : subTaskMap.values()) {
-                writer.write(task.toString());
+            for (Subtask subtask : subTaskMap.values()) {
+                writer.write(subtask.toString());
                 writer.newLine();
             }
         } catch (IOException e) {
@@ -41,7 +41,7 @@ public class FileBackedTaskManager extends InMemoryTaskManager{
         }
     }
 
-    public void createDirectory() {
+    public void createResourcesTxt() {
         try {
             Path currentPath = Paths.get("").toAbsolutePath();
             Path filePath = currentPath.resolve("resources.txt");
@@ -64,38 +64,18 @@ public class FileBackedTaskManager extends InMemoryTaskManager{
         if (file == null) return;
         try (BufferedReader reader = new BufferedReader(new FileReader(this.file, StandardCharsets.UTF_8))) {
             String line;
-            reader.readLine();
+            reader.readLine(); // Пропускает оглав
             while ((line = reader.readLine()) != null) {
-                if (line.trim().isEmpty()) {
-                    continue;
-                }
-                String[] split = line.split(", ");
+                if (!line.trim().isEmpty()) {
+                    String[] split = line.split(", ");
 
-                if (split.length < 5) {
-                    continue;
-                }
-
-                String type = split[1];
-                switch (type) {
-                    case "TASK":
-                        tasksMap.put(getIdTaskForLine(line), Task.fromString(line));
-                        break;
-                    case "SUBTASK":
-                            subTaskMap.put(getIdTaskForLine(line), Subtask.fromString(line, epicMap));
-                        break;
-                    case "EPIC":
-                        epicMap.put(getIdTaskForLine(line), Epic.fromString(line));
-                        break;
+                    if (split.length < 5) continue;
+                    Task.fromString(line, this);
                 }
             }
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
-    }
-
-    public int getIdTaskForLine(String line) {
-        String[] split = line.split(", ");
-        return Integer.parseInt(split[0]);
     }
 
     @Override
@@ -111,16 +91,28 @@ public class FileBackedTaskManager extends InMemoryTaskManager{
         save();
     }
 
+    public void createTaskForSaved(Task task) {
+        super.createTask(task);
+    }
+
     @Override
     public void createEpic(Epic epic) {
         super.createEpic(epic);
         save();
     }
 
+    public void createEpicForSaved(Epic epic) {
+        super.createEpic(epic);
+    }
+
     @Override
     public void createSubtask(Subtask subtask) {
         super.createSubtask(subtask);
         save();
+    }
+
+    public void createSubtaskForSaved(Subtask subtask) {
+        super.createSubtask(subtask);
     }
 
     @Override

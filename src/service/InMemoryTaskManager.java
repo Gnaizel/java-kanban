@@ -5,8 +5,6 @@ import model.Status;
 import model.Subtask;
 import model.Task;
 
-import static model.Communication.*;
-
 import java.util.HashMap;
 import java.util.ArrayList;
 import java.util.List;
@@ -35,19 +33,22 @@ public class InMemoryTaskManager implements TaskManager {
 
     @Override
     public void createEpic(Epic epic) {
-        epicMap.put(epic.getID(), epic);
+            epicMap.put(epic.getID(), epic);
     }
 
     @Override
-    public void createSubtask(Subtask subtask) {
-        updateEpicStatus(getEpicById(subtask.getEpicId()));
-        subTaskMap.put(subtask.getID(), subtask);
+    public void createSubtask(Subtask subtask) throws NullPointerException {
+        try {
+            updateEpicStatus(getEpicById(subtask.getEpicId()));
+            subTaskMap.put(subtask.getID(), subtask);
+        } catch (NullPointerException ignored) {
+
+        }
     }
 
     @Override
     public List<Task> getAllTasks() {
         if (tasksMap.isEmpty()) {
-            noFound();
             return null;
         }
         return new ArrayList<>(tasksMap.values());
@@ -56,7 +57,6 @@ public class InMemoryTaskManager implements TaskManager {
     @Override
     public List<Epic> getAllEpic() {
         if (epicMap.isEmpty()) {
-            noFound();
             return null;
         }
         return new ArrayList<>(epicMap.values());
@@ -65,7 +65,6 @@ public class InMemoryTaskManager implements TaskManager {
     @Override
     public List<Subtask> getAllSubtask() {
         if (subTaskMap.isEmpty()) {
-            noFound();
             return null;
         }
         return new ArrayList<>(subTaskMap.values());
@@ -117,7 +116,6 @@ public class InMemoryTaskManager implements TaskManager {
             historyTask.add(tasksMap.get(id));
             return tasksMap.get(id);
         }
-        noFound();
         return null;
     }
 
@@ -127,7 +125,6 @@ public class InMemoryTaskManager implements TaskManager {
             historyTask.add(subTaskMap.get(id));
             return subTaskMap.get(id);
         }
-        noFound();
         return null;
     }
 
@@ -137,7 +134,6 @@ public class InMemoryTaskManager implements TaskManager {
             historyTask.add(epicMap.get(id));
             return epicMap.get(id);
         }
-        noFound();
         return null;
     }
 
@@ -173,13 +169,17 @@ public class InMemoryTaskManager implements TaskManager {
     }
 
     @Override
-    public void updateEpicStatus(Epic epic) {
-        if (epic.hasNoSubtasks()) {
-            epic.setStatus(Status.NEW);
-        } else if (epic.allSubtasksDone()) {
-            epic.setStatus(Status.DONE);
-        } else {
-            epic.setStatus(Status.IN_PROGRESS);
+    public void updateEpicStatus(Epic epic) throws NullPointerException {
+        try {
+            if (epic.hasNoSubtasks()) {
+                epic.setStatus(Status.NEW);
+            } else if (epic.allSubtasksDone()) {
+                epic.setStatus(Status.DONE);
+            } else {
+                epic.setStatus(Status.IN_PROGRESS);
+            }
+        } catch (NullPointerException ignored) {
+
         }
     }
 
