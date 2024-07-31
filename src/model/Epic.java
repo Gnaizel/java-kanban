@@ -1,18 +1,25 @@
 package model;
 
-import service.ID;
-
 import java.util.ArrayList;
 
 public class Epic extends Task {
 
     private final ArrayList<Subtask> subtasks;
+    private final Type type;
     private final int id;
 
     public Epic(String epicName, String epicDescription) {
         super(Status.NEW, epicName, epicDescription);
         this.subtasks = new ArrayList<>();
-        this.id = ++ID.EpicId;
+        this.id = ++service.ID.EpicId;
+        this.type = Type.EPIC;
+    }
+
+    public Epic(Status status, String epicName, String epicDescription, int id) {
+        super(status, epicName, epicDescription);
+        this.subtasks = new ArrayList<>();
+        this.id = id;
+        this.type = Type.EPIC;
     }
 
     public boolean hasNoSubtasks() {
@@ -24,12 +31,7 @@ public class Epic extends Task {
     }
 
     public void addSubTask(Subtask subtask) {
-        if (subtask == null) return;
         if (!subtasks.contains(subtask)) this.subtasks.add(subtask);
-    }
-
-    public void removeSubTask(Subtask subtask) {
-        this.subtasks.remove(subtask);
     }
 
     public boolean allSubtasksDone() {
@@ -41,9 +43,22 @@ public class Epic extends Task {
         return true;
     }
 
+    public void removeSubTask(Subtask subtask) {
+        subtasks.remove(subtask);
+    }
+
+    @Override
+    public String toString() {
+        return id +
+                ", " + type +
+                ", " + getTaskName() +
+                ", " + getStatus() +
+                ", " + getTaskDescription() +
+                ", " + getSubtasks();
+    }
+
     @Override
     public int getID() {
         return this.id;
     }
-
 }
