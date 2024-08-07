@@ -1,6 +1,6 @@
-package mine;
+package main;
 
-public class Mine {
+public class Main {
     public static void main(String[] args) {
 
     }

@@ -1,5 +1,8 @@
 package model;
 
+import java.time.Duration;
+import java.time.LocalDateTime;
+
 public class Subtask extends Task {
 
     private final Type type;
@@ -7,8 +10,13 @@ public class Subtask extends Task {
     private final Epic epic;
 
 
-    public Subtask(Status status, String subTaskName, String description, Epic epic) {
-        super(status, subTaskName, description);
+    public Subtask(Status status,
+                   String subTaskName,
+                   String description,
+                   Epic epic,
+                   Duration duration,
+                   LocalDateTime startTime) {
+        super(status, subTaskName, description, duration, startTime);
         this.epic = epic;
         epic.addSubTask(this);
         this.id = ++service.ID.SubTaskId;
@@ -17,8 +25,14 @@ public class Subtask extends Task {
 
 
 
-    public Subtask(Status status, String subTaskName, String description, int id,  Epic epic) {
-        super(status, subTaskName, description);
+    public Subtask(Status status,
+                   String subTaskName,
+                   String description,
+                   int id,
+                   Epic epic,
+                   Duration duration,
+                   LocalDateTime startTime) {
+        super(status, subTaskName, description, duration, startTime);
         this.epic = epic;
         this.id = id;
         epic.addSubTask(this);
@@ -42,6 +56,8 @@ public class Subtask extends Task {
                 ", " + getTaskName() +
                 ", " + getStatus() +
                 ", " + getTaskDescription() +
+                ", " + getDuration() +
+                ", " + getStartTime() +
                 ", " + getEpicId();
     }
 }

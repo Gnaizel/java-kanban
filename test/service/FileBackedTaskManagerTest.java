@@ -5,6 +5,9 @@ import model.*;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.BeforeEach;
 
+import java.time.Duration;
+import java.time.LocalDateTime;
+
 import static org.junit.jupiter.api.Assertions.*;
 
 
@@ -19,9 +22,9 @@ class FileBackedTaskManagerTest {
 
     @Test
     void saveTest() {
-        manager.createTask(new Task(Status.NEW, "Таск #1", "Таск созданый при первом запуске"));
-        manager.createTask(new Task(Status.NEW, "Таск #2", "Таск созданый при первом запуске"));
-        manager.createTask(new Task(Status.NEW, "Таск #3", "Таск созданый при первом запуске"));
+        manager.createTask(new Task(Status.NEW, "Таск #1", "Таск созданый при первом запуске", Duration.ZERO, LocalDateTime.now()));
+        manager.createTask(new Task(Status.NEW, "Таск #2", "Таск созданый при первом запуске", Duration.ZERO, LocalDateTime.now()));
+        manager.createTask(new Task(Status.NEW, "Таск #3", "Таск созданый при первом запуске", Duration.ZERO, LocalDateTime.now()));
 
         manager.createEpic(new Epic("Эпик #1","Эпик созданый при первом запуске"));
         manager.createEpic(new Epic("Эпик #2","Эпик созданый при первом запуске"));
@@ -29,17 +32,17 @@ class FileBackedTaskManagerTest {
 
         manager.createSubtask(new Subtask(Status.IN_PROGRESS, "SubTask#1"
                 , "SubTask созданый при первом запуске || Относится к Epic id - 1"
-                , manager.getEpicById(1)));
+                , manager.getEpicById(1), Duration.ZERO, LocalDateTime.now()));
 
         manager.createSubtask(new Subtask(Status.IN_PROGRESS, "SubTask#2"
                 , "SubTask созданый при первом запуске || Относится к Epic id - 1"
-                , manager.getEpicById(1)));
+                , manager.getEpicById(1), Duration.ZERO, LocalDateTime.now()));
 
         manager.createSubtask(new Subtask(Status.IN_PROGRESS, "SubTask#3"
                 , "SubTask созданый при первом запуске || Относится к Epic id - 2"
-                , manager.getEpicById(2)));
+                , manager.getEpicById(2), Duration.ZERO, LocalDateTime.now()));
 
-        // Проверка id тасков на ожидаемые
+//         Проверка id тасков на ожидаемые
         assertEquals(manager.getTaskById(1).getTaskName(),"Таск #1", "id не совпадают (Таск #1)");
         assertEquals(manager.getTaskById(3).getTaskName(),"Таск #3", "id не совпадают (Таск #3)");
 

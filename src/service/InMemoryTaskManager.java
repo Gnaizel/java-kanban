@@ -99,7 +99,7 @@ public class InMemoryTaskManager implements TaskManager {
 
     @Override
     public void deleteEpic(Epic epic) {
-        epic.getSubtasks().clear();
+        epic.getSubTasks().clear();
         epicMap.remove(epic.getID());
     }
 
@@ -171,15 +171,16 @@ public class InMemoryTaskManager implements TaskManager {
     @Override
     public void updateEpicStatus(Epic epic) throws NullPointerException {
         try {
-            if (epic.hasNoSubtasks()) {
+            epic.updateTime();
+            if (epic.hasSubtasksIsEmpty()) {
                 epic.setStatus(Status.NEW);
             } else if (epic.allSubtasksDone()) {
                 epic.setStatus(Status.DONE);
             } else {
                 epic.setStatus(Status.IN_PROGRESS);
             }
-        } catch (NullPointerException ignored) {
-
+        } catch (NullPointerException e) {
+            System.out.println(e.getMessage());
         }
     }
 
