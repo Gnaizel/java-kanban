@@ -39,7 +39,7 @@ public class Epic extends Task {
     private void updateDurationEpic() {
         Duration duration = Duration.ZERO;
         for (Subtask subTask : subTasks) {
-            duration.plus(subTask.getDuration());
+            duration.plus(Duration.ofMinutes(subTask.getDuration()));
         }
         this.setDuration(duration);
     }

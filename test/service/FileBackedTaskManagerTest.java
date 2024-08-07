@@ -67,5 +67,4 @@ class FileBackedTaskManagerTest {
         assertEquals(manager.getSubtaskById(3).getTaskName(), "SubTask#3");
         assertEquals(manager.getSubtaskById(2).getTaskName(), "SubTask#2");
     }
-
 }

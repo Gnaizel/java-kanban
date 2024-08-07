@@ -5,6 +5,8 @@ import service.FileBackedTaskManager;
 import java.time.Duration;
 import java.time.LocalDateTime;
 
+import static java.time.Duration.*;
+
 public class Task {
 
     private final Type type;
@@ -51,7 +53,7 @@ public class Task {
         Status status = Status.valueOf(line[3]);
         String name = line[2];
         String description = line[4];
-        Duration duration = Duration.parse(line[5]);
+        Duration duration = Duration.ofMinutes(Long.parseLong(line[5]));
         LocalDateTime startTime = LocalDateTime.parse(line[6]);
         int id = Integer.parseInt(line[0]);
         switch (line[1]) {
@@ -74,8 +76,8 @@ public class Task {
         return startTime;
     }
 
-    public Duration getDuration() {
-        return duration;
+    public long getDuration() {
+        return duration.toMinutes();
     }
 
     public void setDuration(Duration duration) {
@@ -121,7 +123,7 @@ public class Task {
                 ", " + taskName +
                 ", " + status +
                 ", " + taskDescription +
-                ", " + duration +
+                ", " + duration.toMinutes() +
                 ", " + startTime;
     }
 }
