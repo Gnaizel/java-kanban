@@ -2,6 +2,9 @@ package model;
 
 import service.FileBackedTaskManager;
 
+import java.time.Duration;
+import java.time.LocalDateTime;
+
 public class Task {
 
     private final Type type;
@@ -9,6 +12,8 @@ public class Task {
     private final String taskDescription;
     private Status status;
     private final int id;
+    private Duration duration; //продолжительность задачи
+    private LocalDateTime startTime; // дата и время, когда предполагается приступить к выполнению задачи.
 
     public Task(Status status, String taskName, String taskDescription) {
         this.taskName = taskName;
@@ -50,6 +55,14 @@ public class Task {
                 break;
         }
     }
+
+    public void setDuration(Duration duration) {
+        this.duration = duration;
+    }
+
+    public LocalDateTime getEndTime() {
+        return this.startTime.plus(this.duration);
+    } //дата и время завершения задачи, которые рассчитываются исходя из startTime и duration.
 
     public String getTaskName() {
         return taskName;
