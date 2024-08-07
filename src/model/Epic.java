@@ -11,9 +11,8 @@ public class Epic extends Task {
     private final int id;
 
     public Epic(String epicName,
-                String epicDescription)
-    {
-        super(Status.NEW, epicName, epicDescription, Duration.ZERO, LocalDateTime.of(2024,01,01,00,00));
+                String epicDescription) {
+        super(Status.NEW, epicName, epicDescription, Duration.ZERO, LocalDateTime.of(2024, 01, 01, 00, 00));
         this.subTasks = new ArrayList<>();
         this.id = ++service.ID.EpicId;
         this.type = Type.EPIC;

@@ -24,7 +24,6 @@ public class Subtask extends Task {
     }
 
 
-
     public Subtask(Status status,
                    String subTaskName,
                    String description,

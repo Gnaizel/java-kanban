@@ -33,7 +33,7 @@ public class InMemoryTaskManager implements TaskManager {
 
     @Override
     public void createEpic(Epic epic) {
-            epicMap.put(epic.getID(), epic);
+        epicMap.put(epic.getID(), epic);
     }
 
     @Override
