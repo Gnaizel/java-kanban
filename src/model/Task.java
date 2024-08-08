@@ -5,9 +5,7 @@ import service.FileBackedTaskManager;
 import java.time.Duration;
 import java.time.LocalDateTime;
 
-import static java.time.Duration.*;
-
-public class Task {
+public class Task implements Comparable<Task> {
 
     private final Type type;
     private final String taskName;
@@ -16,7 +14,6 @@ public class Task {
     private final int id;
     private Duration duration; //продолжительность задачи
     private LocalDateTime startTime; // дата и время, когда предполагается приступить к выполнению задачи.
-    private LocalDateTime endTime;
 
     public Task(Status status, String taskName, String taskDescription, Duration duration, LocalDateTime startTime) {
         this.taskName = taskName;
@@ -26,15 +23,9 @@ public class Task {
         this.status = status;
         this.id = ++service.ID.TaskId;
         this.type = Type.TASK;
-        this.endTime = getEndTime();
     }
 
-    public Task(Status status,
-                String taskName,
-                String taskDescription,
-                Duration duration,
-                LocalDateTime startTime,
-                int id) {
+    public Task(Status status, String taskName, String taskDescription, Duration duration, LocalDateTime startTime, int id) {
         this.taskName = taskName;
         this.taskDescription = taskDescription;
         this.duration = duration;
@@ -42,7 +33,6 @@ public class Task {
         this.status = status;
         this.id = id;
         this.type = Type.TASK;
-        this.endTime = getEndTime();
     }
 
     public static void fromString(String str, FileBackedTaskManager manager) {
@@ -92,10 +82,6 @@ public class Task {
         return this.startTime.plus(this.duration);
     } //дата и время завершения задачи, которые рассчитываются исходя из startTime и duration.
 
-    public void setEndTime(LocalDateTime endTime) {
-        this.endTime = endTime;
-    }
-
     public String getTaskName() {
         return taskName;
     }
@@ -117,13 +103,12 @@ public class Task {
     }
 
     @Override
+    public int compareTo(Task task) {
+        return this.getStartTime().compareTo(task.getStartTime());
+    }
+
+    @Override
     public String toString() {
-        return id +
-                ", " + type +
-                ", " + taskName +
-                ", " + status +
-                ", " + taskDescription +
-                ", " + duration.toMinutes() +
-                ", " + startTime;
+        return id + ", " + type + ", " + taskName + ", " + status + ", " + taskDescription + ", " + duration.toMinutes() + ", " + startTime;
     }
 }
