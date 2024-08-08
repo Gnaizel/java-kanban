@@ -11,8 +11,8 @@ public class InMemoryHistoryManager implements HistoryManager {
 
     @Override
     public void add(Task task) {
-            if (viwTaskHistory.size() == 10) viwTaskHistory.removeFirst();
-            this.viwTaskHistory.add(task);
+        if (viwTaskHistory.size() == 10) viwTaskHistory.removeFirst();
+        this.viwTaskHistory.add(task);
     }
 
     @Override

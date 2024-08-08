@@ -5,9 +5,9 @@ import model.Status;
 import model.Subtask;
 import model.Task;
 
-import java.util.HashMap;
-import java.util.ArrayList;
-import java.util.List;
+import java.time.LocalDateTime;
+import java.util.*;
+import java.util.stream.Collectors;
 
 public class InMemoryTaskManager implements TaskManager {
     protected final HashMap<Integer, Task> tasksMap = new HashMap<>();
@@ -27,22 +27,40 @@ public class InMemoryTaskManager implements TaskManager {
     }
 
     @Override
+    public TreeSet<Task> getPrioritizedTasks() {
+        TreeSet<Task> prioritizedTasks = new TreeSet<>();
+        prioritizedTasks.addAll(tasksMap.values());
+        prioritizedTasks.addAll(epicMap.values());
+        prioritizedTasks.addAll(subTaskMap.values());
+        prioritizedTasks = prioritizedTasks.stream()
+                .filter(task -> task.getStartTime() != null)
+                .collect(Collectors.toCollection(TreeSet::new));
+        for (Task task : prioritizedTasks) System.out.println(task.toString());
+        return prioritizedTasks;
+    }
+
+    @Override
     public void createTask(Task task) {
-        tasksMap.put(task.getID(), task);
+        if (isValidTimeTask(task)) {
+            tasksMap.put(task.getID(), task);
+        } else System.out.println("Invalid taskStartTime");
     }
 
     @Override
     public void createEpic(Epic epic) {
+        if (isValidTimeTask(epic)) {
             epicMap.put(epic.getID(), epic);
+        } else System.out.println("Invalid epicStartTime");
     }
 
     @Override
     public void createSubtask(Subtask subtask) throws NullPointerException {
         try {
-            updateEpicStatus(getEpicById(subtask.getEpicId()));
-            subTaskMap.put(subtask.getID(), subtask);
+            if (isValidTimeTask(subtask)) {
+                updateEpicStatus(getEpicById(subtask.getEpicId()));
+                subTaskMap.put(subtask.getID(), subtask);
+            } else System.out.println("Invalid subtaskStartTime");
         } catch (NullPointerException ignored) {
-
         }
     }
 
@@ -54,7 +72,6 @@ public class InMemoryTaskManager implements TaskManager {
         return new ArrayList<>(tasksMap.values());
     }
 
-    @Override
     public List<Epic> getAllEpic() {
         if (epicMap.isEmpty()) {
             return null;
@@ -62,7 +79,6 @@ public class InMemoryTaskManager implements TaskManager {
         return new ArrayList<>(epicMap.values());
     }
 
-    @Override
     public List<Subtask> getAllSubtask() {
         if (subTaskMap.isEmpty()) {
             return null;
@@ -99,7 +115,7 @@ public class InMemoryTaskManager implements TaskManager {
 
     @Override
     public void deleteEpic(Epic epic) {
-        epic.getSubtasks().clear();
+        epic.getSubTasks().clear();
         epicMap.remove(epic.getID());
     }
 
@@ -153,7 +169,6 @@ public class InMemoryTaskManager implements TaskManager {
         updateEpicStatus(getEpicById(updatedSubtask.getEpicId()));
     }
 
-    @Override
     public List<Subtask> getAllSubtasksForEpic(int id) {
         for (Epic epic : epicMap.values()) {
             if (epic.getID() == id) {
@@ -171,15 +186,16 @@ public class InMemoryTaskManager implements TaskManager {
     @Override
     public void updateEpicStatus(Epic epic) throws NullPointerException {
         try {
-            if (epic.hasNoSubtasks()) {
+            epic.updateTime();
+            if (epic.hasSubtasksIsEmpty()) {
                 epic.setStatus(Status.NEW);
             } else if (epic.allSubtasksDone()) {
                 epic.setStatus(Status.DONE);
             } else {
                 epic.setStatus(Status.IN_PROGRESS);
             }
-        } catch (NullPointerException ignored) {
-
+        } catch (NullPointerException e) {
+            System.out.println(e.getMessage());
         }
     }
 
@@ -187,4 +203,24 @@ public class InMemoryTaskManager implements TaskManager {
     public List<Task> getHistory() {
         return historyTask.getHistory();
     }
+
+    @Override
+    public boolean isValidTimeTask(Task task) {
+        Set<LocalDateTime> tasksStarted = new HashSet<>();
+
+        tasksStarted.addAll(tasksMap.values().stream()
+                .map(task1 -> task1.getStartTime().plusMinutes(task1.getDuration()))
+                .collect(Collectors.toSet()));
+
+        tasksStarted.addAll(epicMap.values().stream()
+                .map(task1 -> task1.getStartTime().plusMinutes(task1.getDuration()))
+                .collect(Collectors.toSet()));
+
+        tasksStarted.addAll(subTaskMap.values().stream()
+                .map(task1 -> task1.getStartTime().plusMinutes(task1.getDuration()))
+                .collect(Collectors.toSet()));
+
+        return !tasksStarted.contains(task.getStartTime());
+    }
+
 }

@@ -6,52 +6,51 @@ import model.Subtask;
 import model.Task;
 
 import java.util.List;
+import java.util.TreeSet;
 
 public interface TaskManager {
 
-  void clearAll();
+    void clearAll();
 
-  void createTask(Task task);
+    void createTask(Task task);
 
-  void createEpic(Epic epic);
+    void createEpic(Epic epic);
 
-  void createSubtask(Subtask subtask);
+    void createSubtask(Subtask subtask);
 
-  List<Task> getAllTasks();
+    List<Task> getAllTasks();
 
-  List<Epic> getAllEpic();
+    void deleteAllTasks();
 
-  List<Subtask> getAllSubtask();
+    void deleteAllEpics();
 
-  void deleteAllTasks();
+    void deleteAllSubtasks();
 
-  void deleteAllEpics();
+    void deleteTask(Task task);
 
-  void deleteAllSubtasks();
+    void deleteEpic(Epic epic);
 
-  void deleteTask(Task task);
+    void deleteSubtask(Subtask subtask);
 
-  void deleteEpic(Epic epic);
+    Task getTaskById(int taskId);
 
-  void deleteSubtask(Subtask subtask);
+    Epic getEpicById(int taskId);
 
-  Task getTaskById(int taskId);
+    Subtask getSubtaskById(int taskId);
 
-  Epic getEpicById(int taskId);
+    void updateTask(Task updatedTask);
 
-  Subtask getSubtaskById(int taskId);
+    void updateEpic(Epic updatedEpic);
 
-  void updateTask(Task updatedTask);
+    void updateSubtask(Subtask updatedSubtask);
 
-  void updateEpic(Epic updatedEpic);
+    void setSubTaskStatus(Subtask subtask, Status status);
 
-  void updateSubtask(Subtask updatedSubtask);
+    void updateEpicStatus(Epic epic);
 
-  List<Subtask> getAllSubtasksForEpic(int id);
+    List<Task> getHistory();
 
-  void setSubTaskStatus(Subtask subtask, Status status);
+    TreeSet<Task> getPrioritizedTasks();
 
-  void updateEpicStatus(Epic epic);
-
-  List<Task> getHistory();
+    boolean isValidTimeTask(Task task);
 }

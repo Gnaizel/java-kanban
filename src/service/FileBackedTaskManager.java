@@ -61,7 +61,7 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
     }
 
     public void unpackFile() {
-        if (file == null) return;
+        if (!file.exists()) return;
         try (BufferedReader reader = new BufferedReader(new FileReader(this.file, StandardCharsets.UTF_8))) {
             String line;
             reader.readLine(); // Пропускает оглав
@@ -89,6 +89,7 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
     public void createTask(Task task) {
         super.createTask(task);
         save();
+        System.out.println("КОМАР!!!");
     }
 
     public void createTaskForSaved(Task task) {
@@ -176,7 +177,7 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
     }
 
     @Override
-    public void updateEpicStatus(Epic epic) {
+    public void updateEpicStatus(Epic epic) throws NullPointerException {
         super.updateEpicStatus(epic);
         save();
     }
