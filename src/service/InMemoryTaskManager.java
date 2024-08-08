@@ -5,187 +5,227 @@ import model.Status;
 import model.Subtask;
 import model.Task;
 
-import java.util.HashMap;
-import java.util.ArrayList;
-import java.util.List;
+import java.time.Duration;
+import java.time.LocalDateTime;
+import java.util.*;
+import java.util.stream.Collectors;
 
 public class InMemoryTaskManager implements TaskManager {
-    protected final HashMap<Integer, Task> tasksMap = new HashMap<>();
-    protected final HashMap<Integer, Epic> epicMap = new HashMap<>();
-    protected final HashMap<Integer, Subtask> subTaskMap = new HashMap<>();
-    protected final HistoryManager historyTask = new InMemoryHistoryManager();
+    public final Map<Integer, Task> tasks = new HashMap<>();
+    public final Map<Integer, Epic> epics = new HashMap<>();
+    public final Map<Integer, Subtask> subTasks = new HashMap<>();
+    private final TreeSet<Task> prioritizedTasks = new TreeSet<>(Comparator.comparing(Task::getStartTime).thenComparing(Task::getID));
+    private final InMemoryHistoryManager history = new InMemoryHistoryManager();
 
-    public InMemoryTaskManager() {
-        clearAll();
+    @Override
+    public void add(Task task) {
+        validateTask(task);
+        tasks.put(task.getID(), task);
+        prioritizedTasks.add(task);
     }
 
     @Override
-    public void clearAll() {
-        deleteAllTasks();
-        deleteAllEpics();
-        deleteAllSubtasks();
+    public void add(Epic epic) {
+        validateEpic(epic);
+        epics.put(epic.getID(), epic);
+        prioritizedTasks.add(epic);
     }
 
     @Override
-    public void createTask(Task task) {
-        tasksMap.put(task.getID(), task);
+    public void add(Subtask subtask) {
+        validateSubtask(subtask);
+        subTasks.put(subtask.getID(), subtask);
+        prioritizedTasks.add(subtask);
     }
 
     @Override
-    public void createEpic(Epic epic) {
-        epicMap.put(epic.getID(), epic);
+    public Task getTask(int id) {
+        return tasks.get(id);
     }
 
     @Override
-    public void createSubtask(Subtask subtask) throws NullPointerException {
-        try {
-            updateEpicStatus(getEpicById(subtask.getEpicId()));
-            subTaskMap.put(subtask.getID(), subtask);
-        } catch (NullPointerException ignored) {
+    public Epic getEpic(int id) {
+        return epics.get(id);
+    }
 
+    @Override
+    public Subtask getSubtask(int id) {
+        return subTasks.get(id);
+    }
+
+    @Override
+    public void update(Task task) {
+        validateTask(task);
+        tasks.put(task.getID(), task);
+        prioritizedTasks.remove(task); // Удаляем старую задачу
+        prioritizedTasks.add(task); // Добавляем обновленную задачу
+    }
+
+    @Override
+    public void update(Epic epic) {
+        validateEpic(epic);
+        epics.put(epic.getID(), epic);
+        prioritizedTasks.remove(epic); // Удаляем старый эпик
+        prioritizedTasks.add(epic); // Добавляем обновленный эпик
+    }
+
+    @Override
+    public void update(Subtask subtask) {
+        validateSubtask(subtask);
+        subTasks.put(subtask.getID(), subtask);
+        prioritizedTasks.remove(subtask); // Удаляем старую подзадачу
+        prioritizedTasks.add(subtask); // Добавляем обновленную подзадачу
+    }
+
+    @Override
+    public List<Subtask> getAllSubtasksForEpic(int id) {
+        return List.of();
+    }
+
+    @Override
+    public void setSubTaskStatus(Subtask subtask, Status status) {
+
+    }
+
+    @Override
+    public void updateEpicStatus(Epic epic) {
+
+    }
+
+    @Override
+    public void deleteTask(int id) {
+        Task task = tasks.get(id);
+        if (task != null) {
+            tasks.remove(id);
+            prioritizedTasks.remove(task);
+            return;
+        }
+    }
+
+    @Override
+    public void deleteSubtask(int id) {
+        Subtask subtask = subTasks.get(id);
+        if (subtask != null) {
+            subTasks.remove(id);
+            prioritizedTasks.remove(subtask);
+        }
+    }
+
+    @Override
+    public void deleteEpic(int id) {
+        Epic epic = epics.get(id);
+        if (epic != null) {
+            epics.remove(id);
+            prioritizedTasks.remove(epic);
+            return;
         }
     }
 
     @Override
     public List<Task> getAllTasks() {
-        if (tasksMap.isEmpty()) {
-            return null;
-        }
-        return new ArrayList<>(tasksMap.values());
+        return new ArrayList<>(tasks.values());
     }
 
     @Override
-    public List<Epic> getAllEpic() {
-        if (epicMap.isEmpty()) {
-            return null;
-        }
-        return new ArrayList<>(epicMap.values());
+    public List<Epic> getAllEpics() {
+        return new ArrayList<>(epics.values());
     }
 
     @Override
-    public List<Subtask> getAllSubtask() {
-        if (subTaskMap.isEmpty()) {
-            return null;
-        }
-        return new ArrayList<>(subTaskMap.values());
-    }
-
-    public void deleteAllTasks() {
-        tasksMap.clear();
-        ID.TaskId = 0;
+    public List<Subtask> getAllSubtasks() {
+        return new ArrayList<>(subTasks.values());
     }
 
     @Override
-    public void deleteAllEpics() {
-        epicMap.clear();
-        subTaskMap.clear();
-        ID.EpicId = 0;
-        ID.SubTaskId = 0;
+    public List<Subtask> getSubtasksForEpic(int epicId) {
+        return subTasks.values().stream()
+                .filter(subtask -> subtask.getEpicId() == epicId)
+                .collect(Collectors.toList());
     }
 
     @Override
-    public void deleteAllSubtasks() {
-        for (Epic epic : epicMap.values()) {
-            epic.setStatus(Status.NEW);
-        }
-        subTaskMap.clear();
-        ID.SubTaskId = 0;
+    public List<Task> getPrioritizedTasks() {
+        return new ArrayList<>(prioritizedTasks);
     }
-
-    @Override
-    public void deleteTask(Task task) {
-        tasksMap.remove(task.getID());
-    }
-
-    @Override
-    public void deleteEpic(Epic epic) {
-        epic.getSubTasks().clear();
-        epicMap.remove(epic.getID());
-    }
-
-    @Override
-    public void deleteSubtask(Subtask subtask) {
-        updateEpicStatus(getEpicById(subtask.getEpicId()));
-        getEpicById(subtask.getEpicId()).removeSubTask(subtask);
-        subTaskMap.remove(subtask.getID());
-    }
-
-    @Override
-    public Task getTaskById(int id) {
-        if (tasksMap.containsKey(id)) {
-            historyTask.add(tasksMap.get(id));
-            return tasksMap.get(id);
-        }
-        return null;
-    }
-
-    @Override
-    public Subtask getSubtaskById(int id) {
-        if (subTaskMap.containsKey(id)) {
-            historyTask.add(subTaskMap.get(id));
-            return subTaskMap.get(id);
-        }
-        return null;
-    }
-
-    @Override
-    public Epic getEpicById(int id) {
-        if (epicMap.containsKey(id)) {
-            historyTask.add(epicMap.get(id));
-            return epicMap.get(id);
-        }
-        return null;
-    }
-
-    @Override
-    public void updateTask(Task updatedTask) {
-        tasksMap.replace(updatedTask.getID(), updatedTask);
-    }
-
-    @Override
-    public void updateEpic(Epic updatedEpic) {
-        epicMap.replace(updatedEpic.getID(), updatedEpic);
-    }
-
-    @Override
-    public void updateSubtask(Subtask updatedSubtask) {
-        subTaskMap.replace(updatedSubtask.getID(), updatedSubtask);
-        updateEpicStatus(getEpicById(updatedSubtask.getEpicId()));
-    }
-
-    @Override
-    public List<Subtask> getAllSubtasksForEpic(int id) {
-        for (Epic epic : epicMap.values()) {
-            if (epic.getID() == id) {
-                return new ArrayList<>(subTaskMap.values());
-            }
-        }
-        return null;
-    }
-
-    @Override
-    public void setSubTaskStatus(Subtask subtask, Status status) {
-        subtask.setStatus(status);
-    }
-
-    @Override
-    public void updateEpicStatus(Epic epic) throws NullPointerException {
-        try {
-            epic.updateTime();
-            if (epic.hasSubtasksIsEmpty()) {
-                epic.setStatus(Status.NEW);
-            } else if (epic.allSubtasksDone()) {
-                epic.setStatus(Status.DONE);
-            } else {
-                epic.setStatus(Status.IN_PROGRESS);
-            }
-        } catch (NullPointerException e) {
-            System.out.println(e.getMessage());
-        }
-    }
-
+    
     @Override
     public List<Task> getHistory() {
-        return historyTask.getHistory();
+        return history.getHistory();
+    }
+
+    private void validateTask(Task task) {
+        validateTimeOverlap(task);
+    }
+
+    private void validateEpic(Epic epic) {
+        List<Subtask> subtasksForEpic = getSubtasksForEpic(epic.getID());
+        LocalDateTime startTime = subtasksForEpic.stream()
+                .filter(subtask -> subtask.getStartTime() != null)
+                .min(Comparator.comparing(Subtask::getStartTime))
+                .map(Subtask::getStartTime)
+                .orElse(null);
+
+        LocalDateTime endTime = subtasksForEpic.stream()
+                .filter(subtask -> subtask.getEndTime() != null)
+                .max(Comparator.comparing(Subtask::getEndTime))
+                .map(Subtask::getEndTime)
+                .orElse(null);
+
+        epic.setStartTime(startTime);
+        epic.setEndTime(endTime);
+
+        epic.setDuration(subtasksForEpic.stream()
+                .map(Subtask::getDuration)
+                .reduce(Duration.ZERO, Duration::plus));
+
+        validateTimeOverlap(epic);
+    }
+
+    private void validateSubtask(Subtask subtask) {
+        validateTimeOverlap(subtask);
+        Epic epic = epics.get(subtask.getEpicId());
+        if (epic != null) {
+            epic.setStartTime(LocalDateTime.MIN);
+            epic.setEndTime(LocalDateTime.MAX);
+            epic.setDuration(Duration.ZERO);
+            validateEpic(epic);
+        }
+    }
+
+    private void validateTimeOverlap(Task task) {
+        if (task.getStartTime() == null) {
+            return;
+        }
+        boolean overlaps = prioritizedTasks.stream()
+                .filter(otherTask -> otherTask != task)
+                .anyMatch(otherTask -> timeOverlap(task.getStartTime(), task.getEndTime(),
+                        otherTask.getStartTime(), otherTask.getEndTime()));
+        if (overlaps) {
+            throw new IllegalArgumentException("New task overlaps with existing task.");
+        }
+    }
+
+    public Task getTaskForCount(int count) { // для тестов
+        return tasks.get(count);
+    }
+
+    public Epic getEpicForCount(int count) { // для тестов
+        return epics.get(count);
+    }
+
+    public Subtask getSubtaskForCount(int count) { // для тестов
+        return subTasks.get(count);
+    }
+
+    private boolean timeOverlap(LocalDateTime start1, LocalDateTime end1, LocalDateTime start2, LocalDateTime end2) {
+        return (start1.isBefore(end2) || start1.isEqual(end2)) && (end1.isAfter(start2) || end1.isEqual(start2));
+    }
+
+    @Override
+    public void clear() {
+        tasks.clear();
+        epics.clear();
+        subTasks.clear();
+        prioritizedTasks.clear();
     }
 }

@@ -34,8 +34,8 @@ class HistoryManagerTest {
     @Test
     void getHistory() {
         TaskManager manager = new InMemoryTaskManager();
-        manager.createTask(new Task(Status.NEW, "Name", "Description", Duration.ZERO, LocalDateTime.now()));
-        manager.getTaskById(1);
+        manager.add(new Task(Status.NEW, "Name", "Description", Duration.ZERO, LocalDateTime.now()));
+        manager.getTask(1);
         assertNotNull(manager.getHistory(), "История ровна нулю </>");
         List<Task> history = manager.getHistory();
         assertEquals(history, manager.getHistory(), " что ?");
@@ -44,14 +44,14 @@ class HistoryManagerTest {
     @Test
     void remove() {
         TaskManager manager = new InMemoryTaskManager();
-        manager.createTask(new Task(Status.NEW, "Name", "Description", Duration.ZERO, LocalDateTime.now()));
-        manager.createTask(new Task(Status.NEW, "Name", "Description", Duration.ZERO, LocalDateTime.now()));
-        manager.createTask(new Task(Status.NEW, "Name", "Description", Duration.ZERO, LocalDateTime.now()));
-        manager.getTaskById(1);
-        manager.getTaskById(1);
-        manager.getTaskById(2);
-        manager.getTaskById(3);
-        manager.getTaskById(3);
+        manager.add(new Task(Status.NEW, "Name", "Description", Duration.ZERO, LocalDateTime.now()));
+        manager.add(new Task(Status.NEW, "Name", "Description", Duration.ZERO, LocalDateTime.now()));
+        manager.add(new Task(Status.NEW, "Name", "Description", Duration.ZERO, LocalDateTime.now()));
+        manager.getTask(1);
+        manager.getTask(1);
+        manager.getTask(2);
+        manager.getTask(3);
+        manager.getTask(3);
         System.out.println(manager.getHistory());
     }
 

@@ -1,13 +1,12 @@
 package model;
 
 import service.FileBackedTaskManager;
+import service.ID;
 
 import java.time.Duration;
 import java.time.LocalDateTime;
 
-import static java.time.Duration.*;
-
-public class Task {
+public class Task implements Comparable<Task> {
 
     private final Type type;
     private final String taskName;
@@ -16,6 +15,7 @@ public class Task {
     private final int id;
     private Duration duration; //продолжительность задачи
     private LocalDateTime startTime; // дата и время, когда предполагается приступить к выполнению задачи.
+    private final int count;
     private LocalDateTime endTime;
 
     public Task(Status status, String taskName, String taskDescription, Duration duration, LocalDateTime startTime) {
@@ -24,9 +24,10 @@ public class Task {
         this.duration = duration;
         this.startTime = startTime;
         this.status = status;
-        this.id = ++service.ID.TaskId;
-        this.type = Type.TASK;
+        this.id = service.ID.generateId();
+        this.count = ++ID.TaskCount; // Нужен для рабботы map В будующем уёдет так как не думаю что пользователь будет что- то искать по счёту тасков
         this.endTime = getEndTime();
+        this.type = Type.TASK;
     }
 
     public Task(Status status,
@@ -41,8 +42,10 @@ public class Task {
         this.startTime = startTime;
         this.status = status;
         this.id = id;
-        this.type = Type.TASK;
         this.endTime = getEndTime();
+        this.count = ++ID.TaskCount;
+        this.type = Type.TASK;
+
     }
 
     public static void fromString(String str, FileBackedTaskManager manager) {
@@ -58,18 +61,30 @@ public class Task {
         int id = Integer.parseInt(line[0]);
         switch (line[1]) {
             case "TASK":
-                manager.createTaskForSaved(new Task(status, name, description, duration, startTime, id));
+                manager.addForSaved(new Task(status, name, description, duration, startTime, id));
                 break;
             default:
                 break;
             case "EPIC":
-                manager.createEpicForSaved(new Epic(status, name, description, duration, startTime, id));
+                manager.addForSaved(new Epic(status, name, description, duration, startTime, id));
                 break;
             case "SUBTASK":
                 int epicId = Integer.parseInt(line[7]);
-                manager.createSubtaskForSaved(new Subtask(status, name, description, id, manager.getEpicById(epicId), duration, startTime));
+                manager.addForSaved(new Subtask(status, name, description, id, manager.getEpic(epicId), duration, startTime));
                 break;
         }
+    }
+
+    public LocalDateTime getEndTime() {
+        return getStartTime().plusMinutes(this.getDuration());
+    }
+
+    public void setEndTime(LocalDateTime endTime) {
+        this.endTime = endTime;
+    }
+
+    public int getCount() {
+        return count;
     }
 
     public LocalDateTime getStartTime() {
@@ -87,14 +102,7 @@ public class Task {
     public void setStartTime(LocalDateTime startTime) {
         this.startTime = startTime;
     }
-
-    public LocalDateTime getEndTime() {
-        return this.startTime.plus(this.duration);
-    } //дата и время завершения задачи, которые рассчитываются исходя из startTime и duration.
-
-    public void setEndTime(LocalDateTime endTime) {
-        this.endTime = endTime;
-    }
+    //дата и время завершения задачи, которые рассчитываются исходя из startTime и duration.
 
     public String getTaskName() {
         return taskName;
@@ -114,6 +122,11 @@ public class Task {
 
     public int getID() {
         return id;
+    }
+
+    @Override
+    public int compareTo(Task task) {
+        return this.getStartTime().compareTo(task.getStartTime());
     }
 
     @Override

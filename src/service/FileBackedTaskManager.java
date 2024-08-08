@@ -24,15 +24,15 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
         try (BufferedWriter writer = new BufferedWriter(new FileWriter(file, StandardCharsets.UTF_8))) {
             writer.write("id,type,name,status,description,epic");
             writer.newLine();
-            for (Task task : tasksMap.values()) {
+            for (Task task : tasks.values()) {
                 writer.write(task.toString());
                 writer.newLine();
             }
-            for (Epic epic : epicMap.values()) {
+            for (Epic epic : epics.values()) {
                 writer.write(epic.toString());
                 writer.newLine();
             }
-            for (Subtask subtask : subTaskMap.values()) {
+            for (Subtask subtask : subTasks.values()) {
                 writer.write(subtask.toString());
                 writer.newLine();
             }
@@ -79,94 +79,62 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
     }
 
     @Override
-    public void clearAll() {
-        deleteAllTasks();
-        deleteAllEpics();
-        deleteAllSubtasks();
+    public void clear() {
+        super.clear();
     }
 
     @Override
-    public void createTask(Task task) {
-        super.createTask(task);
+    public void add(Task task) {
+        super.add(task);
         save();
         System.out.println("КОМАР!!!");
     }
 
-    public void createTaskForSaved(Task task) {
-        super.createTask(task);
+    public void addForSaved(Task task) {
+        super.add(task);
     }
 
     @Override
-    public void createEpic(Epic epic) {
-        super.createEpic(epic);
+    public void add(Epic epic) {
+        super.add(epic);
         save();
     }
 
-    public void createEpicForSaved(Epic epic) {
-        super.createEpic(epic);
+    public void addForSaved(Epic epic) {
+        super.add(epic);
     }
 
     @Override
-    public void createSubtask(Subtask subtask) {
-        super.createSubtask(subtask);
+    public void add(Subtask subtask) {
+        super.add(subtask);
         save();
     }
 
-    public void createSubtaskForSaved(Subtask subtask) {
-        super.createSubtask(subtask);
+    public void addForSaved(Subtask subtask) {
+        super.add(subtask);
     }
 
     @Override
-    public void deleteAllTasks() {
-        super.deleteAllTasks();
-        save();
-    }
-
-    @Override
-    public void deleteAllEpics() {
-        super.deleteAllEpics();
+    public void deleteTask(int id) {
+        super.deleteTask(id);
         save();
     }
 
     @Override
-    public void deleteAllSubtasks() {
-        super.deleteAllSubtasks();
+    public void update(Task task) {
+        super.update(task);
         save();
     }
 
     @Override
-    public void deleteTask(Task task) {
-        super.deleteTask(task);
+    public void update(Epic epic) {
+        super.update(epic);
         save();
     }
 
     @Override
-    public void deleteEpic(Epic epic) {
-        super.deleteEpic(epic);
-        save();
-    }
-
-    @Override
-    public void deleteSubtask(Subtask subtask) {
-        super.deleteSubtask(subtask);
-        save();
-    }
-
-    @Override
-    public void updateTask(Task updatedTask) {
-        super.updateTask(updatedTask);
-        save();
-    }
-
-    @Override
-    public void updateEpic(Epic updatedEpic) {
-        super.updateEpic(updatedEpic);
-        save();
-    }
-
-    @Override
-    public void updateSubtask(Subtask updatedSubtask) {
-        super.updateSubtask(updatedSubtask);
+    public void update(Subtask subtask) {
+        super.update(subtask);
         save();
     }
 

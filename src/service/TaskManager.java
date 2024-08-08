@@ -9,43 +9,39 @@ import java.util.List;
 
 public interface TaskManager {
 
-    void clearAll();
+    void clear();
 
-    void createTask(Task task);
+    void add(Task task);
 
-    void createEpic(Epic epic);
+    void add(Subtask subtask);
 
-    void createSubtask(Subtask subtask);
+    void add(Epic epic);
 
     List<Task> getAllTasks();
 
-    List<Epic> getAllEpic();
+    List<Epic> getAllEpics();
 
-    List<Subtask> getAllSubtask();
+    List<Subtask> getAllSubtasks();
 
-    void deleteAllTasks();
+    List<Subtask> getSubtasksForEpic(int epicId);
 
-    void deleteAllEpics();
+    void deleteTask(int id);
 
-    void deleteAllSubtasks();
+    void deleteEpic(int id);
 
-    void deleteTask(Task task);
+    void deleteSubtask(int id);
 
-    void deleteEpic(Epic epic);
+    Task getTask(int id);
 
-    void deleteSubtask(Subtask subtask);
+    Epic getEpic(int id);
 
-    Task getTaskById(int taskId);
+    Subtask getSubtask(int id);
 
-    Epic getEpicById(int taskId);
+    void update(Task task);
 
-    Subtask getSubtaskById(int taskId);
+    void update(Epic epic);
 
-    void updateTask(Task updatedTask);
-
-    void updateEpic(Epic updatedEpic);
-
-    void updateSubtask(Subtask updatedSubtask);
+    void update(Subtask subtask);
 
     List<Subtask> getAllSubtasksForEpic(int id);
 
@@ -54,4 +50,6 @@ public interface TaskManager {
     void updateEpicStatus(Epic epic);
 
     List<Task> getHistory();
+
+    List<Task> getPrioritizedTasks();
 }

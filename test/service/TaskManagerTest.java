@@ -17,94 +17,94 @@ class TaskManagerTest {
     TaskManager manager = null;
 
     @BeforeEach
-    void createTaskManager() {
+    void addManager() {
         manager = new InMemoryTaskManager();
     }
 
     @Test
     void shouldReturnTrueIfCreateAllView() {
-        manager.createTask(new Task(Status.IN_PROGRESS, "Name1", "Description1", Duration.ZERO, LocalDateTime.now()));
-        manager.createEpic(new Epic("Name1", "Description1"));
-        manager.createSubtask(new Subtask(Status.IN_PROGRESS, "Name", "description"
-                , manager.getEpicById(1), Duration.ZERO, LocalDateTime.now()));
-        assertSame(manager.getTaskById(1).getClass(), Task.class);
-        assertSame(manager.getEpicById(1).getClass(), Epic.class);
-        assertSame(manager.getSubtaskById(1).getClass(), Subtask.class);
+        manager.add(new Task(Status.IN_PROGRESS, "Name1", "Description1", Duration.ZERO, LocalDateTime.now()));
+        manager.add(new Epic("Name1", "Description1"));
+        manager.add(new Subtask(Status.IN_PROGRESS, "Name", "description"
+                , manager.getEpic(1), Duration.ZERO, LocalDateTime.now()));
+        assertSame(manager.getTask(1).getClass(), Task.class);
+        assertSame(manager.getEpic(1).getClass(), Epic.class);
+        assertSame(manager.getSubtask(1).getClass(), Subtask.class);
         assertEquals(1, manager.getAllTasks().size());
-        assertNotNull(manager.getTaskById(1));
-        assertNotNull(manager.getEpicById(1));
-        assertNotNull(manager.getSubtaskById(1));
+        assertNotNull(manager.getTask(1));
+        assertNotNull(manager.getEpic(1));
+        assertNotNull(manager.getSubtask(1));
     }
 
     @Test
     void checkCorrectWorkEpics() {
-        manager.createEpic(new Epic("Name1", "Description1"));
-        manager.createSubtask(new Subtask(Status.IN_PROGRESS, "Name", "description"
-                , manager.getEpicById(1), Duration.ZERO, LocalDateTime.now()));
+        manager.add(new Epic("Name1", "Description1"));
+        manager.add(new Subtask(Status.IN_PROGRESS, "Name", "description"
+                , manager.getEpic(1), Duration.ZERO, LocalDateTime.now()));
 
-        Subtask subtask = manager.getEpicById(1).getSubTasks().getFirst();
-        assertEquals(manager.getSubtaskById(1), subtask);
+        Subtask subtask = manager.getEpic(1).getSubTasks().getFirst();
+        assertEquals(manager.getSubtask(1), subtask);
     }
 
     @Test
     void addNewTask() {
-        manager.createTask(new Task(Status.NEW, "Test addNewTask", "Test addNewTask description", Duration.ZERO, LocalDateTime.now()));
+        manager.add(new Task(Status.NEW, "Test addNewTask", "Test addNewTask description", Duration.ZERO, LocalDateTime.now()));
 
-        final int taskId = manager.getTaskById(1).getID();
-        final Task savedTask = manager.getTaskById(taskId);
+        final int taskId = manager.getTask(1).getID();
+        final Task savedTask = manager.getTask(taskId);
 
         assertNotNull(savedTask, "Задача не найдена.");
-        assertEquals(manager.getTaskById(1), savedTask, "Задачи не совпадают.");
+        assertEquals(manager.getTask(1), savedTask, "Задачи не совпадают.");
 
         final List<Task> tasks = manager.getAllTasks();
 
         assertNotNull(tasks, "Задачи не возвращаются.");
         assertEquals(1, tasks.size(), "Неверное количество задач.");
-        assertEquals(manager.getTaskById(1), tasks.getFirst(), "Задачи не совпадают.");
+        assertEquals(manager.getTask(1), tasks.getFirst(), "Задачи не совпадают.");
     }
 
     @Test
     void shouldReturnTrueIfEquivalentTests() {
-        manager.createTask(new Task(Status.IN_PROGRESS, "Name1", "Description1", Duration.ZERO, LocalDateTime.now()));
-        manager.createTask(new Task(Status.NEW, "Name2", "Description2", Duration.ZERO, LocalDateTime.now()));
+        manager.add(new Task(Status.IN_PROGRESS, "Name1", "Description1", Duration.ZERO, LocalDateTime.now()));
+        manager.add(new Task(Status.NEW, "Name2", "Description2", Duration.ZERO, LocalDateTime.now()));
 
-        assertEquals(manager.getTaskById(1), manager.getTaskById(1)
+        assertEquals(manager.getTask(1), manager.getTask(1)
                 , "Задачи с ID:1 и ID:1 не эквивалентны !!!");
 
-        assertNotEquals(manager.getTaskById(1), manager.getTaskById(2)
+        assertNotEquals(manager.getTask(1), manager.getTask(2)
                 , "Задачи с ID:1 и ID:2 эквивалентны !!!");
     }
 
     @Test
     void shouldReturnTrueIfEquivalentHearsTest() {
-        manager.createEpic(new Epic("Name1", "Description1"));
-        manager.createEpic(new Epic("Name2", "Description2"));
+        manager.add(new Epic("Name1", "Description1"));
+        manager.add(new Epic("Name2", "Description2"));
 
-        manager.createSubtask(new Subtask(Status.IN_PROGRESS, "Name1Sub", "Description1Sub"
-                , manager.getEpicById(1), Duration.ZERO, LocalDateTime.now()));
+        manager.add(new Subtask(Status.IN_PROGRESS, "Name1Sub", "Description1Sub"
+                , manager.getEpic(1), Duration.ZERO, LocalDateTime.now()));
 
-        manager.createSubtask(new Subtask(Status.IN_PROGRESS, "Name2Sub", "Description2Sub"
-                , manager.getEpicById(1), Duration.ZERO, LocalDateTime.now()));
+        manager.add(new Subtask(Status.IN_PROGRESS, "Name2Sub", "Description2Sub"
+                , manager.getEpic(1), Duration.ZERO, LocalDateTime.now()));
 
-        assertEquals(manager.getEpicById(1), manager.getEpicById(1)
+        assertEquals(manager.getEpic(1), manager.getEpic(1)
                 , "Задачи с ID:1 и ID:1 не эквивалентны !!!");
 
-        assertNotEquals(manager.getEpicById(1), manager.getEpicById(2));
+        assertNotEquals(manager.getEpic(1), manager.getEpic(2));
     }
 
     @Test
     void subTaskRm() {
         TaskManager manager = new InMemoryTaskManager();
-        manager.createEpic(new Epic("N", "D"));
-        manager.createSubtask(new Subtask(Status.NEW, "Name", "D", manager.getEpicById(1), Duration.ZERO, LocalDateTime.now()));
-        manager.createSubtask(new Subtask(Status.NEW, "Name", "D", manager.getEpicById(1), Duration.ZERO, LocalDateTime.now()));
-        manager.createSubtask(new Subtask(Status.NEW, "Name", "D", manager.getEpicById(1), Duration.ZERO, LocalDateTime.now()));
-        assertNotNull(manager.getSubtaskById(1));
-        assertNotNull(manager.getSubtaskById(2));
-        assertNotNull(manager.getSubtaskById(3));
+        manager.add(new Epic("N", "D"));
+        manager.add(new Subtask(Status.NEW, "Name", "D", manager.getEpic(1), Duration.ZERO, LocalDateTime.now()));
+        manager.add(new Subtask(Status.NEW, "Name", "D", manager.getEpic(1), Duration.ZERO, LocalDateTime.now()));
+        manager.add(new Subtask(Status.NEW, "Name", "D", manager.getEpic(1), Duration.ZERO, LocalDateTime.now()));
+        assertNotNull(manager.getSubtask(1));
+        assertNotNull(manager.getSubtask(2));
+        assertNotNull(manager.getSubtask(3));
 
-        manager.deleteEpic(manager.getEpicById(1));
-        assertNull(manager.getEpicById(1));
+        manager.deleteTask(manager.getEpic(1));
+        assertNull(manager.getEpic(1));
 
     }
 

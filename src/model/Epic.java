@@ -9,12 +9,16 @@ public class Epic extends Task {
     private final ArrayList<Subtask> subTasks;
     private final Type type;
     private final int id;
+    private final int count;
+    private LocalDateTime endTime;
 
     public Epic(String epicName,
                 String epicDescription) {
         super(Status.NEW, epicName, epicDescription, Duration.ZERO, LocalDateTime.of(2024, 01, 01, 00, 00));
         this.subTasks = new ArrayList<>();
-        this.id = ++service.ID.EpicId;
+        this.count = ++service.ID.EpicCount; // Нужен для рабботы map В будующем уёдет так как не думаю что пользователь будет что- то искать по счёту тасков
+        this.endTime = getEndTime();
+        id = service.ID.generateId();
         this.type = Type.EPIC;
     }
 
@@ -22,11 +26,12 @@ public class Epic extends Task {
                 String epicName,
                 String epicDescription,
                 Duration duration,
-                LocalDateTime startTime,
-                int id) {
+                LocalDateTime startTime, int id) {
         super(status, epicName, epicDescription, duration, startTime);
-        this.subTasks = new ArrayList<>();
         this.id = id;
+        this.subTasks = new ArrayList<>();
+        this.count = ++service.ID.EpicCount;
+        this.endTime = getEndTime();
         this.type = Type.EPIC;
     }
 
@@ -52,8 +57,16 @@ public class Epic extends Task {
                     endTime = subTask.getEndTime();
                 }
             }
-            this.setEndTime(endTime);
+            setEndTime(endTime);
         }
+    }
+
+    public LocalDateTime getEndTime() {
+        return getStartTime().plusMinutes(this.getDuration());
+    }
+
+    public void setEndTime(LocalDateTime endTime) {
+        this.endTime = endTime;
     }
 
     private void calculateStartTimeEpic() {
