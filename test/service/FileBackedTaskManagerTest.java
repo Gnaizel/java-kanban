@@ -69,4 +69,17 @@ class FileBackedTaskManagerTest {
 
         manager.getPrioritizedTasks();
     }
+
+    @Test
+    void testTimeTask() throws NullPointerException {
+        manager.createTask(new Task(Status.NEW, "Таск #1", "Таск", Duration.ofMinutes(5), LocalDateTime.parse("2024-08-08T00:00")));
+        manager.createTask(new Task(Status.NEW, "Таск #2", "Таск", Duration.ofMinutes(6), LocalDateTime.parse("2024-08-08T05:00")));
+        manager.createTask(new Task(Status.NEW, "Таск #3", "Таск", Duration.ofMinutes(10), LocalDateTime.parse("2024-08-08T07:00")));
+
+        manager.getPrioritizedTasks();
+
+        manager.createTask(new Task(Status.NEW, "~", "~", Duration.ofMinutes(1), LocalDateTime.parse("2024-08-08T07:00")));
+        assertNull(manager.getTaskById(4));
+        for (Task task : manager.getPrioritizedTasks()) System.out.println(task);
+    }
 }

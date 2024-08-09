@@ -7,7 +7,6 @@ import model.Task;
 
 import java.time.LocalDateTime;
 import java.util.*;
-import java.util.stream.Collectors;
 
 public class InMemoryTaskManager implements TaskManager {
     protected final HashMap<Integer, Task> tasksMap = new HashMap<>();
@@ -28,14 +27,18 @@ public class InMemoryTaskManager implements TaskManager {
 
     @Override
     public TreeSet<Task> getPrioritizedTasks() {
-        TreeSet<Task> prioritizedTasks = new TreeSet<>();
-        prioritizedTasks.addAll(tasksMap.values());
-        prioritizedTasks.addAll(epicMap.values());
-        prioritizedTasks.addAll(subTaskMap.values());
-        prioritizedTasks = prioritizedTasks.stream()
+        TreeSet<Task> prioritizedTasks = new TreeSet<>(Comparator.comparing(Task::getStartTime)
+                .thenComparing(Task::getID));
+        prioritizedTasks.addAll(tasksMap.values().stream()
                 .filter(task -> task.getStartTime() != null)
-                .collect(Collectors.toCollection(TreeSet::new));
-        for (Task task : prioritizedTasks) System.out.println(task.toString());
+                .toList());
+        prioritizedTasks.addAll(epicMap.values().stream()
+                .filter(epic -> epic.getStartTime() != null)
+                .toList());
+        prioritizedTasks.addAll(subTaskMap.values().stream()
+                .filter(subtask -> subtask.getStartTime() != null)
+                .toList());
+
         return prioritizedTasks;
     }
 
@@ -204,23 +207,36 @@ public class InMemoryTaskManager implements TaskManager {
         return historyTask.getHistory();
     }
 
+//    @Override
+//    public boolean isValidTimeTask(Task task) {
+//        Set<LocalDateTime> tasksStarted = new HashSet<>();
+//
+//        tasksStarted.addAll(tasksMap.values().stream()
+//                .map(task1 -> task1.getStartTime().plusMinutes(task1.getDuration()))
+//                .collect(Collectors.toSet()));
+//
+//        tasksStarted.addAll(epicMap.values().stream()
+//                .map(task1 -> task1.getStartTime().plusMinutes(task1.getDuration()))
+//                .collect(Collectors.toSet()));
+//
+//        tasksStarted.addAll(subTaskMap.values().stream()
+//                .map(task1 -> task1.getStartTime().plusMinutes(task1.getDuration()))
+//                .collect(Collectors.toSet()));
+//
+//        return !tasksStarted.contains(task.getStartTime());
+//    }
+
+    private boolean timeOverlap(LocalDateTime start1, LocalDateTime end1, LocalDateTime start2, LocalDateTime end2) {
+        return (start1.isBefore(end2) || start1.isEqual(end2)) && (end1.isAfter(start2) || end1.isEqual(start2));
+    } // Накладывается ли задача
+
     @Override
     public boolean isValidTimeTask(Task task) {
-        Set<LocalDateTime> tasksStarted = new HashSet<>();
-
-        tasksStarted.addAll(tasksMap.values().stream()
-                .map(task1 -> task1.getStartTime().plusMinutes(task1.getDuration()))
-                .collect(Collectors.toSet()));
-
-        tasksStarted.addAll(epicMap.values().stream()
-                .map(task1 -> task1.getStartTime().plusMinutes(task1.getDuration()))
-                .collect(Collectors.toSet()));
-
-        tasksStarted.addAll(subTaskMap.values().stream()
-                .map(task1 -> task1.getStartTime().plusMinutes(task1.getDuration()))
-                .collect(Collectors.toSet()));
-
-        return !tasksStarted.contains(task.getStartTime());
+        return tasksMap.values().stream()
+                .filter(otherTask -> otherTask != task)
+                .filter(otherTask -> timeOverlap(task.getStartTime(), task.getEndTime(),
+                        otherTask.getStartTime(), otherTask.getEndTime()))
+                .count() == 0;
     }
 
 }
