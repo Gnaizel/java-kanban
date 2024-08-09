@@ -22,9 +22,9 @@ class FileBackedTaskManagerTest {
 
     @Test
     void saveTest() {
-        manager.createTask(new Task(Status.NEW, "Таск #1", "Таск созданый при первом запуске", Duration.ofMinutes(30), LocalDateTime.parse("2024-08-08T22:00:00")));
-        manager.createTask(new Task(Status.NEW, "Таск #2", "Таск созданый при первом запуске", Duration.ofMinutes(1123123), LocalDateTime.parse("2024-08-08T22:00:15")));
-        manager.createTask(new Task(Status.NEW, "Таск #3", "Таск созданый при первом запуске", Duration.ofMinutes(19), LocalDateTime.parse("2024-08-08T22:10:00")));
+        manager.createTask(new Task(Status.NEW, "Таск #1", "Таск созданый при первом запуске", Duration.ofMinutes(30), LocalDateTime.parse("2024-08-09T00:00")));
+        manager.createTask(new Task(Status.NEW, "Таск #2", "Таск созданый при первом запуске", Duration.ofMinutes(30), LocalDateTime.parse("2024-09-08T03:00")));
+        manager.createTask(new Task(Status.NEW, "Таск #3", "Таск созданый при первом запуске", Duration.ofMinutes(19), LocalDateTime.parse("2024-09-08T04:00")));
 
         manager.createEpic(new Epic("Эпик #1", "Эпик созданый при первом запуске"));
         manager.createEpic(new Epic("Эпик #2", "Эпик созданый при первом запуске"));
@@ -32,15 +32,15 @@ class FileBackedTaskManagerTest {
 
         manager.createSubtask(new Subtask(Status.IN_PROGRESS, "SubTask#1"
                 , "SubTask созданый при первом запуске || Относится к Epic id - 1"
-                , manager.getEpicById(1), Duration.ZERO, LocalDateTime.parse("2024-08-08T22:00:59")));
+                , manager.getEpicById(1), Duration.ZERO, LocalDateTime.parse("2024-08-09T05:00")));
 
         manager.createSubtask(new Subtask(Status.IN_PROGRESS, "SubTask#2"
                 , "SubTask созданый при первом запуске || Относится к Epic id - 1"
-                , manager.getEpicById(1), Duration.ZERO, LocalDateTime.parse("2024-08-08T22:01:50")));
+                , manager.getEpicById(1), Duration.ZERO, LocalDateTime.parse("2024-08-09T06:01")));
 
         manager.createSubtask(new Subtask(Status.IN_PROGRESS, "SubTask#3"
                 , "SubTask созданый при первом запуске || Относится к Epic id - 2"
-                , manager.getEpicById(2), Duration.ofMinutes(10), LocalDateTime.parse("2024-08-08T22:03:59")));
+                , manager.getEpicById(2), Duration.ofMinutes(10), LocalDateTime.parse("2024-08-09T07:03")));
 
 //         Проверка id тасков на ожидаемые
         assertEquals(manager.getTaskById(1).getTaskName(), "Таск #1", "id не совпадают (Таск #1)");
