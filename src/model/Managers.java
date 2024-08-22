@@ -3,8 +3,7 @@ package model;
 import service.*;
 
 public class Managers {
-
-    public static TaskManager getDefault() {
+    public static TaskManager getInMemoryTaskManager() {
         return new InMemoryTaskManager();
     }
 

@@ -8,6 +8,7 @@ import java.util.List;
 
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.BeforeEach;
+import com.google.gson.*;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -73,6 +74,13 @@ class TaskManagerTest {
 
         assertNotEquals(manager.getTaskById(1), manager.getTaskById(2)
                 , "Задачи с ID:1 и ID:2 эквивалентны !!!");
+    }
+
+    @Test
+    void gsonTaskTest () {
+        Gson gson = new Gson();
+        manager.createTask(new Task(Status.NEW, "Name2", "Description2", Duration.ZERO, LocalDateTime.now()));
+        System.out.println(gson.toJson(manager.getTaskById(1)));
     }
 
     @Test
