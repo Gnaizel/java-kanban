@@ -1,6 +1,7 @@
 package main;
 
 import com.sun.net.httpserver.HttpExchange;
+
 import java.io.IOException;
 import java.io.OutputStream;
 import java.nio.charset.StandardCharsets;
@@ -11,6 +12,8 @@ public class BaseHttpHandler {
         h.sendResponseHeaders(200, 0);
         try (OutputStream os = h.getResponseBody()) {
             os.write(text.getBytes(StandardCharsets.UTF_8));
+        } catch (IOException e) {
+            System.out.println("Ну пиздец");
         }
     }
 

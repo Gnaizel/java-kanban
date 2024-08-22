@@ -77,9 +77,13 @@ class TaskManagerTest {
     }
 
     @Test
-    void gsonTaskTest () {
-        Gson gson = new Gson();
-        manager.createTask(new Task(Status.NEW, "Name2", "Description2", Duration.ZERO, LocalDateTime.now()));
+    void gsonTaskTest() {
+        Gson gson = new GsonBuilder()
+                .registerTypeAdapter(Duration.class, new DurationTypeAdapter())
+                .registerTypeAdapter(LocalDateTime.class, new LocalDataTimeAdapter())
+                .setPrettyPrinting()
+                .create();
+        manager.createTask(new Task(Status.NEW, "Name2", "Description2", Duration.ofMinutes(30), LocalDateTime.now()));
         System.out.println(gson.toJson(manager.getTaskById(1)));
     }
 

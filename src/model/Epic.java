@@ -107,7 +107,7 @@ public class Epic extends Task {
                 ", " + getStatus() +
                 ", " + getTaskDescription() +
                 ", " + getDuration() +
-                ", " + getStartTime() +
+                ", " + getStartTime().format(formatter) +
                 ", " + getSubTasks();
     }
 

@@ -1,8 +1,11 @@
 package main;
 
 import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+import model.LocalDataTimeAdapter;
 import model.Status;
 import model.Task;
+import model.DurationTypeAdapter;
 import service.*;
 
 import com.sun.net.httpserver.HttpExchange;
@@ -17,8 +20,12 @@ import java.time.Duration;
 import java.time.LocalDateTime;
 
 public class HttpTaskServer {
-    static final TaskManager taskManager = new InMemoryTaskManager();
-    static final Gson gson = new Gson();
+    static final TaskManager taskManager = new FileBackedTaskManager();
+    static GsonBuilder gsonBuilder = new GsonBuilder()
+            .registerTypeAdapter(Duration.class, new DurationTypeAdapter())
+            .registerTypeAdapter(LocalDataTimeAdapter.class, new LocalDataTimeAdapter())
+            .setPrettyPrinting();
+    static final Gson gson = gsonBuilder.create();
 
     public static void main(String[] args) {
         taskManager.createTask(new Task(Status.NEW, "Name2", "Description2", Duration.ZERO, LocalDateTime.now()));
@@ -43,21 +50,20 @@ public class HttpTaskServer {
     static class TasksHandler implements HttpHandler {
         @Override
         public void handle(HttpExchange exchange) throws IOException {
-            String query = exchange.getRequestURI().getQuery();
-            int id = -1;
-            if (query != null && query.startsWith("id=")) {
-                try {
-                    id = Integer.parseInt(query.split("=")[1]);
-                } catch (NumberFormatException e) {
-                    // ID некорректный, отправляем 400 Bad Request
-                    BaseHttpHandler.sendBadRequest(exchange);
-                    return;
-                }
+
+            String path = exchange.getRequestURI().getPath();
+            int id;
+            try {
+                String[] pathParts = path.split("/");
+                id = Integer.parseInt(pathParts[pathParts.length - 1]);
+            } catch (NumberFormatException | ArrayIndexOutOfBoundsException | NullPointerException e) {
+                id = -1;
             }
 
             String response;
+
             switch (exchange.getRequestMethod()) {
-                case "GET":
+                case "GET" -> {
                     System.out.println("Обрабатываю GET");
                     if (id == -1) {
                         response = gson.toJson(taskManager.getAllTasks());
@@ -65,14 +71,16 @@ public class HttpTaskServer {
                     } else {
                         Task task = taskManager.getTaskById(id);
                         if (task != null) {
-                            response = gson.toJson(task);
-                            BaseHttpHandler.sendText(exchange, response);
+                            System.out.println(gson.toJson(task));
+//                            response = gson.toJson(task);
+                            exchange.sendResponseHeaders(200, 0);
+//                            BaseHttpHandler.sendText(exchange, response);
                         } else {
                             BaseHttpHandler.sendNotFound(exchange);
                         }
                     }
-                    break;
-                case "POST":
+                }
+                case "POST" -> {
                     System.out.println("Обрабатываю POST");
                     if (id == -1) {
                         try (InputStream is = exchange.getRequestBody()) {
@@ -97,8 +105,8 @@ public class HttpTaskServer {
                             BaseHttpHandler.sendNotFound(exchange);
                         }
                     }
-                    break;
-                case "DELETE":
+                }
+                case "DELETE" -> {
                     System.out.println("Обрабатываю DELETE");
                     if (id == -1) {
                         BaseHttpHandler.sendNotFound(exchange);
@@ -110,9 +118,8 @@ public class HttpTaskServer {
                             BaseHttpHandler.sendNotFound(exchange);
                         }
                     }
-                    break;
-                default:
-                    BaseHttpHandler.sendText(exchange, "Неизвестный метод запроса");
+                }
+                default -> BaseHttpHandler.sendText(exchange, "Неизвестный метод запроса");
             }
         }
     }
