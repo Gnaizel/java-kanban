@@ -9,6 +9,8 @@ import java.util.List;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.BeforeEach;
 import com.google.gson.*;
+//import typeAdapter.EpicTypeAdapter;
+import typeAdapter.SubtaskTypeAdapter;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -81,10 +83,16 @@ class TaskManagerTest {
         Gson gson = new GsonBuilder()
                 .registerTypeAdapter(Duration.class, new DurationTypeAdapter())
                 .registerTypeAdapter(LocalDateTime.class, new LocalDataTimeAdapter())
+//                .registerTypeAdapter(Epic.class, new EpicTypeAdapter())
+                .registerTypeAdapter(Subtask.class, new SubtaskTypeAdapter())
                 .setPrettyPrinting()
                 .create();
-        manager.createTask(new Task(Status.NEW, "Name2", "Description2", Duration.ofMinutes(30), LocalDateTime.now()));
-        System.out.println(gson.toJson(manager.getTaskById(1)));
+        Epic epic = new Epic("Name1", "Description1");
+        String json = gson.toJson(epic);
+        manager.createEpic(gson.fromJson(json, Epic.class));
+        manager.createSubtask(new Subtask(Status.IN_PROGRESS, "Name1Sub", "Description1Sub"
+                , manager.getEpicById(1), Duration.ZERO, LocalDateTime.now()));
+        System.out.println(gson.toJson(manager.getEpicById(1)));
     }
 
     @Test

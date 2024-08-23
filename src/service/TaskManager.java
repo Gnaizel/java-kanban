@@ -20,6 +20,10 @@ public interface TaskManager {
 
     List<Task> getAllTasks();
 
+    public List<Epic> getAllEpic();
+
+    public List<Subtask> getAllSubtask();
+
     void deleteAllTasks();
 
     void deleteAllEpics();

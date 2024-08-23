@@ -9,14 +9,14 @@ import java.util.Objects;
 
 public class Task implements Comparable<Task> {
 
-    private final Type type;
-    private final String taskName;
-    private final String taskDescription;
-    private Status status;
-    private final int id;
-    private Duration duration;
-    static final DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
-    private LocalDateTime startTime;
+    protected Type type;
+    protected String taskName;
+    protected String taskDescription;
+    protected Status status;
+    protected int id;
+    protected Duration duration;
+    public static final DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+    protected LocalDateTime startTime;
 
     public Task(Status status, String taskName, String taskDescription, Duration duration, LocalDateTime startTime) {
         this.taskName = taskName;

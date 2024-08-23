@@ -7,10 +7,8 @@ import java.util.List;
 
 public class Epic extends Task {
 
-    private final List<Subtask> subTasks;
-    private final Type type;
-    private final int id;
     private LocalDateTime endTime;
+    private final List<Subtask> subTasks;
 
     public Epic(String epicName,
                 String epicDescription) {
@@ -18,6 +16,7 @@ public class Epic extends Task {
         this.subTasks = new ArrayList<>();
         this.id = ++service.ID.EpicId;
         this.type = Type.EPIC;
+        this.status = Status.NEW;
     }
 
     public Epic(Status status,
@@ -29,7 +28,7 @@ public class Epic extends Task {
         super(status, epicName, epicDescription, duration, startTime);
         this.subTasks = new ArrayList<>();
         this.id = id;
-        this.type = Type.EPIC;
+        type = Type.EPIC;
     }
 
     public void updateTime() {
@@ -100,19 +99,29 @@ public class Epic extends Task {
     }
 
     @Override
-    public String toString() {
-        return id +
-                ", " + type +
-                ", " + getTaskName() +
-                ", " + getStatus() +
-                ", " + getTaskDescription() +
-                ", " + getDuration() +
-                ", " + getStartTime().format(formatter) +
-                ", " + getSubTasks();
+    public Type getType() {
+        return type;
     }
 
     @Override
-    public int getID() {
-        return this.id;
+    public int getId() {
+        return id;
+    }
+
+    @Override
+    public LocalDateTime getEndTime() {
+        return endTime;
+    }
+
+    @Override
+    public String toString() {
+        return id +
+                ", " + type +
+                ", " + taskName +
+                ", " + status +
+                ", " + taskDescription +
+                ", " + duration.toMinutes() +
+                ", " + startTime.format(formatter) +
+                ", " + subTasks;
     }
 }

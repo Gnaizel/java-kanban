@@ -1,12 +1,13 @@
 package model;
 
+import com.google.gson.annotations.Expose;
+
 import java.time.Duration;
 import java.time.LocalDateTime;
 
 public class Subtask extends Task {
 
-    private final Type type;
-    private final int id;
+    private int epicId;
     private final Epic epic;
 
 
@@ -19,10 +20,24 @@ public class Subtask extends Task {
         super(status, subTaskName, description, duration, startTime);
         this.epic = epic;
         epic.addSubTask(this);
+        this.epicId = getEpicId();
         this.id = ++service.ID.SubTaskId;
         this.type = Type.SUBTASK;
     }
 
+    @Override
+    public Type getType() {
+        return type;
+    }
+
+    @Override
+    public int getId() {
+        return id;
+    }
+
+    public Epic getEpic() {
+        return epic;
+    }
 
     public Subtask(Status status,
                    String subTaskName,
@@ -52,11 +67,11 @@ public class Subtask extends Task {
     public String toString() {
         return id +
                 ", " + type +
-                ", " + getTaskName() +
-                ", " + getStatus() +
-                ", " + getTaskDescription() +
-                ", " + getDuration() +
-                ", " + getStartTime().format(formatter) +
-                ", " + getEpicId();
+                ", " + taskName +
+                ", " + status +
+                ", " + taskDescription +
+                ", " + duration.toMinutes() +
+                ", " + startTime.format(formatter) +
+                ", " + epicId;
     }
 }

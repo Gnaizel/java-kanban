@@ -5,6 +5,7 @@ import com.google.gson.stream.JsonWriter;
 import com.google.gson.stream.JsonReader;
 
 import java.io.IOException;
+import java.time.DateTimeException;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 
@@ -13,7 +14,11 @@ public class LocalDataTimeAdapter extends TypeAdapter<LocalDateTime> {
 
     @Override
     public void write(final JsonWriter out, final LocalDateTime time) throws IOException {
-        out.value(time.format(formatter));
+        try {
+            out.value(time.format(formatter));
+        } catch (NullPointerException e) {
+            out.nullValue();
+        }
     }
 
     @Override

@@ -75,6 +75,7 @@ public class InMemoryTaskManager implements TaskManager {
         return new ArrayList<>(tasksMap.values());
     }
 
+    @Override
     public List<Epic> getAllEpic() {
         if (epicMap.isEmpty()) {
             return null;
@@ -82,6 +83,7 @@ public class InMemoryTaskManager implements TaskManager {
         return new ArrayList<>(epicMap.values());
     }
 
+    @Override
     public List<Subtask> getAllSubtask() {
         if (subTaskMap.isEmpty()) {
             return null;
