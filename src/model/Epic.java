@@ -7,8 +7,8 @@ import java.util.List;
 
 public class Epic extends Task {
 
-    private LocalDateTime endTime;
     private final List<Subtask> subTasks;
+    private LocalDateTime endTime;
 
     public Epic(String epicName,
                 String epicDescription) {
@@ -90,10 +90,6 @@ public class Epic extends Task {
         return true;
     }
 
-    public void setEndTime(LocalDateTime endTime) {
-        this.endTime = endTime;
-    }
-
     public void removeSubTask(Subtask subtask) {
         subTasks.remove(subtask);
     }
@@ -111,6 +107,10 @@ public class Epic extends Task {
     @Override
     public LocalDateTime getEndTime() {
         return endTime;
+    }
+
+    public void setEndTime(LocalDateTime endTime) {
+        this.endTime = endTime;
     }
 
     @Override

@@ -9,13 +9,13 @@ import java.util.Objects;
 
 public class Task implements Comparable<Task> {
 
+    public static final DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
     protected Type type;
     protected String taskName;
     protected String taskDescription;
     protected Status status;
     protected int id;
     protected Duration duration;
-    public static final DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
     protected LocalDateTime startTime;
 
     public Task(Status status, String taskName, String taskDescription, Duration duration, LocalDateTime startTime) {
@@ -81,16 +81,16 @@ public class Task implements Comparable<Task> {
         return startTime;
     }
 
+    public void setStartTime(LocalDateTime startTime) {
+        this.startTime = startTime;
+    }
+
     public long getDuration() {
         return duration.toMinutes();
     }
 
     public void setDuration(Duration duration) {
         this.duration = duration;
-    }
-
-    public void setStartTime(LocalDateTime startTime) {
-        this.startTime = startTime;
     }
 
     public LocalDateTime getEndTime() {

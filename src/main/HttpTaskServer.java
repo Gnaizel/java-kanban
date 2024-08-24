@@ -53,7 +53,7 @@ public class HttpTaskServer {
             System.out.println("Ошибка HttpServer (main)");
         }
     }
-    
+
     static class PrioritizedHandler implements HttpHandler {
         @Override
         public void handle(HttpExchange t) throws IOException {
@@ -102,7 +102,7 @@ public class HttpTaskServer {
                                 response = gson.toJson(task, Epic.class);
                                 BaseHttpHandler.sendText(exchange, response, 200);
                             } else {
-                                BaseHttpHandler.sendText(exchange,"такого Epic нет",404);
+                                BaseHttpHandler.sendText(exchange, "такого Epic нет", 404);
                             }
                         }
                     }
@@ -116,7 +116,7 @@ public class HttpTaskServer {
                                 taskManager.createEpic(epic);
                                 BaseHttpHandler.sendText(exchange, 201);
                             }
-                            BaseHttpHandler.sendText(exchange, "Неверный Epic",404);
+                            BaseHttpHandler.sendText(exchange, "Неверный Epic", 404);
                         } catch (IOException e) {
                             System.out.println("Ошибка обработки POST запроса");
                         }
@@ -136,7 +136,7 @@ public class HttpTaskServer {
                 case "DELETE" -> {
                     System.out.println("Обработка DELETE");
                     if (id == -1) {
-                        BaseHttpHandler.sendText(exchange, "Введите id",404);
+                        BaseHttpHandler.sendText(exchange, "Введите id", 404);
                     } else {
                         if (taskManager.getEpicById(id) != null) {
                             taskManager.deleteEpic(taskManager.getEpicById(id));
@@ -166,7 +166,7 @@ public class HttpTaskServer {
                         Task task = taskManager.getSubtaskById(id);
                         if (task != null) {
                             response = gson.toJson(task);
-                            BaseHttpHandler.sendText(exchange, response,200);
+                            BaseHttpHandler.sendText(exchange, response, 200);
                         } else {
                             BaseHttpHandler.sendNotFound(exchange);
                         }
@@ -183,7 +183,7 @@ public class HttpTaskServer {
                                 return;
                             }
                             taskManager.createSubtask(task);
-                            BaseHttpHandler.sendText(exchange,201);// Сделать отдельный метод с 201
+                            BaseHttpHandler.sendText(exchange, 201);// Сделать отдельный метод с 201
                         } catch (IOException e) {
                             BaseHttpHandler.sendNotFound(exchange);
                         }
@@ -192,7 +192,7 @@ public class HttpTaskServer {
                             String taskJson = new String(is.readAllBytes(), StandardCharsets.UTF_8);
                             Subtask task = gson.fromJson(taskJson, Subtask.class);
                             taskManager.updateSubtask(id, task);
-                            BaseHttpHandler.sendText(exchange,201);
+                            BaseHttpHandler.sendText(exchange, 201);
                         } catch (IOException e) {
                             BaseHttpHandler.sendNotFound(exchange);
                         }
@@ -205,16 +205,17 @@ public class HttpTaskServer {
                     } else {
                         if (taskManager.getSubtaskById(id) != null) {
                             taskManager.deleteSubtask(taskManager.getSubtaskById(id));
-                            BaseHttpHandler.sendText(exchange, "Subtask id:" + id + " удален.",200);
+                            BaseHttpHandler.sendText(exchange, "Subtask id:" + id + " удален.", 200);
                         } else {
                             BaseHttpHandler.sendNotFound(exchange);
                         }
                     }
                 }
-                default -> BaseHttpHandler.sendText(exchange, "Неизвестный метод запроса",404);
+                default -> BaseHttpHandler.sendText(exchange, "Неизвестный метод запроса", 404);
             }
         }
     }
+
     static class TasksHandler implements HttpHandler {
         @Override
         public void handle(HttpExchange exchange) throws IOException {
@@ -248,7 +249,7 @@ public class HttpTaskServer {
                                 return;
                             }
                             taskManager.createTask(task);
-                            BaseHttpHandler.sendText(exchange,201);// Сделать отдельный метод с 201
+                            BaseHttpHandler.sendText(exchange, 201);// Сделать отдельный метод с 201
                         } catch (IOException e) {
                             BaseHttpHandler.sendNotFound(exchange);
                         }
@@ -257,7 +258,7 @@ public class HttpTaskServer {
                             String taskJson = new String(is.readAllBytes(), StandardCharsets.UTF_8);
                             Task task = gson.fromJson(taskJson, Task.class);
                             taskManager.updateTask(id, task);
-                            BaseHttpHandler.sendText(exchange,201);
+                            BaseHttpHandler.sendText(exchange, 201);
                         } catch (IOException e) {
                             BaseHttpHandler.sendNotFound(exchange);
                         }
@@ -270,13 +271,13 @@ public class HttpTaskServer {
                     } else {
                         if (taskManager.getTaskById(id) != null) {
                             taskManager.deleteTask(taskManager.getTaskById(id));
-                            BaseHttpHandler.sendText(exchange, "Задача " + id + " удалена.",200);
+                            BaseHttpHandler.sendText(exchange, "Задача " + id + " удалена.", 200);
                         } else {
                             BaseHttpHandler.sendNotFound(exchange);
                         }
                     }
                 }
-                default -> BaseHttpHandler.sendText(exchange, "Неизвестный метод запроса",404);
+                default -> BaseHttpHandler.sendText(exchange, "Неизвестный метод запроса", 404);
             }
         }
     }
