@@ -8,8 +8,8 @@ import service.*;
 import com.sun.net.httpserver.HttpExchange;
 import com.sun.net.httpserver.HttpHandler;
 import com.sun.net.httpserver.HttpServer;
-import typeAdapter.DurationTypeAdapter;
-import typeAdapter.EpicTypeAdapter;
+import typeAdapter.DurationAdapter;
+import typeAdapter.EpicAdapter;
 import typeAdapter.LocalDataTimeAdapter;
 import typeAdapter.SubtaskAdapter;
 
@@ -24,9 +24,9 @@ import java.time.LocalDateTime;
 public class HttpTaskServer {
     static final TaskManager taskManager = new FileBackedTaskManager();
     static GsonBuilder gsonBuilder = new GsonBuilder()
-            .registerTypeAdapter(Duration.class, new DurationTypeAdapter())
+            .registerTypeAdapter(Duration.class, new DurationAdapter())
             .registerTypeAdapter(LocalDateTime.class, new LocalDataTimeAdapter())
-            .registerTypeAdapter(Epic.class, new EpicTypeAdapter())
+            .registerTypeAdapter(Epic.class, new EpicAdapter())
             .registerTypeAdapter(Subtask.class, new SubtaskAdapter())
             .setPrettyPrinting();
     static final Gson gson = gsonBuilder.create();
@@ -41,11 +41,22 @@ public class HttpTaskServer {
             server.createContext("/subtasks", new SubtaskHandler());
             server.createContext("/epics", new EpicHandler());
             server.createContext("/history", new HistoryHandler());
+            server.createContext("/prioritized", new PrioritizedHandler());
 
             server.start();
             System.out.println("Server started");
         } catch (IOException e) {
             System.out.println("Ошибка HttpServer (main)");
+        }
+    }
+    
+    static class PrioritizedHandler implements HttpHandler {
+        @Override
+        public void handle(HttpExchange t) throws IOException {
+            if (t.getRequestMethod().equals("GET") && !taskManager.getPrioritizedTasks().isEmpty()) {
+                String response = gson.toJson(taskManager.getPrioritizedTasks());
+                BaseHttpHandler.sendText(t, response, 200);
+            }
         }
     }
 

@@ -12,7 +12,7 @@ import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 
-public class EpicTypeAdapter implements JsonSerializer<Epic>, JsonDeserializer<Epic> {
+public class EpicAdapter implements JsonSerializer<Epic>, JsonDeserializer<Epic> {
 
     private final DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ISO_LOCAL_DATE_TIME;
     private final SubtaskAdapter subtaskAdapter = new SubtaskAdapter();

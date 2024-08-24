@@ -8,10 +8,11 @@ import java.util.List;
 
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.BeforeEach;
+
 import com.google.gson.*;
-//import typeAdapter.EpicTypeAdapter;
-import typeAdapter.DurationTypeAdapter;
-import typeAdapter.EpicTypeAdapter;
+
+import typeAdapter.DurationAdapter;
+import typeAdapter.EpicAdapter;
 import typeAdapter.LocalDataTimeAdapter;
 import typeAdapter.SubtaskAdapter;
 
@@ -84,9 +85,9 @@ class TaskManagerTest {
     @Test
     void gsonTaskTest() {
         Gson gson = new GsonBuilder()
-                .registerTypeAdapter(Duration.class, new DurationTypeAdapter())
+                .registerTypeAdapter(Duration.class, new DurationAdapter())
                 .registerTypeAdapter(LocalDateTime.class, new LocalDataTimeAdapter())
-                .registerTypeAdapter(Epic.class, new EpicTypeAdapter())
+                .registerTypeAdapter(Epic.class, new EpicAdapter())
                 .registerTypeAdapter(Subtask.class, new SubtaskAdapter())
                 .setPrettyPrinting()
                 .create();
