@@ -1,6 +1,10 @@
 package main;
 // Если что тесты могут не рабботать так как строились отдельно и изза базы могут рабботать не коректно можно просто её очищать тогда рабботает
 
+import adapter.DurationAdapter;
+import adapter.EpicAdapter;
+import adapter.LocalDataTimeAdapter;
+import adapter.SubtaskAdapter;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.sun.net.httpserver.HttpExchange;
@@ -12,10 +16,6 @@ import model.Subtask;
 import model.Task;
 import service.FileBackedTaskManager;
 import service.TaskManager;
-import adapter.DurationAdapter;
-import adapter.EpicAdapter;
-import adapter.LocalDataTimeAdapter;
-import adapter.SubtaskAdapter;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -27,12 +27,7 @@ import java.time.LocalDateTime;
 
 public class HttpTaskServer {
     static final TaskManager taskManager = new FileBackedTaskManager();
-    static GsonBuilder gsonBuilder = new GsonBuilder()
-            .registerTypeAdapter(Duration.class, new DurationAdapter())
-            .registerTypeAdapter(LocalDateTime.class, new LocalDataTimeAdapter())
-            .registerTypeAdapter(Epic.class, new EpicAdapter())
-            .registerTypeAdapter(Subtask.class, new SubtaskAdapter())
-            .setPrettyPrinting();
+    static GsonBuilder gsonBuilder = new GsonBuilder().registerTypeAdapter(Duration.class, new DurationAdapter()).registerTypeAdapter(LocalDateTime.class, new LocalDataTimeAdapter()).registerTypeAdapter(Epic.class, new EpicAdapter()).registerTypeAdapter(Subtask.class, new SubtaskAdapter()).setPrettyPrinting();
     static final Gson gson = gsonBuilder.create();
 
     public static void main(String[] args) {
@@ -93,8 +88,7 @@ public class HttpTaskServer {
                         BaseHttpHandler.sendText(exchange, response, 200);
                     } else {
                         if (exchange.getRequestURI().toString().split("/")[3].equals("subtasks")) {
-                            BaseHttpHandler.sendText(exchange, gson.toJson(taskManager.getEpicById(id).getSubTasks())
-                                    , 200);
+                            BaseHttpHandler.sendText(exchange, gson.toJson(taskManager.getEpicById(id).getSubTasks()), 200);
                         } else {
                             Epic task = taskManager.getEpicById(id);
                             if (task != null) {
