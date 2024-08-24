@@ -17,7 +17,7 @@ class IDTest {
 
     @BeforeEach
     void createManager() {
-        manager = new InMemoryTaskManager();
+        manager = new FileBackedTaskManager();
     }
 
     @Test

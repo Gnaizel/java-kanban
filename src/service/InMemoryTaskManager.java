@@ -226,14 +226,13 @@ public class InMemoryTaskManager implements TaskManager {
         if (task instanceof Epic epic) {
             return epicMap.values().stream()
                     .filter(otherTask -> otherTask != task)
-                    .noneMatch(otherTask -> timeOverlap(task.getStartTime(), task.getEndTime(),
-                            otherTask.getStartTime(), otherTask.getEndTime()));
+                    .noneMatch(otherTask -> true);
         } else if (task instanceof Subtask subtask) {
             return subTaskMap.values().stream()
                     .filter(otherTask -> otherTask != task)
                     .noneMatch(otherTask -> timeOverlap(task.getStartTime(), task.getEndTime(),
                             otherTask.getStartTime(), otherTask.getEndTime()));
-        } else if (task instanceof Task taskClass) {
+        } else if (task != null) {
             return tasksMap.values().stream()
                     .filter(otherTask -> otherTask != task)
                     .noneMatch(otherTask -> timeOverlap(task.getStartTime(), task.getEndTime(),
