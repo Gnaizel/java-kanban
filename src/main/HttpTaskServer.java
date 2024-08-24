@@ -8,8 +8,10 @@ import service.*;
 import com.sun.net.httpserver.HttpExchange;
 import com.sun.net.httpserver.HttpHandler;
 import com.sun.net.httpserver.HttpServer;
-//import typeAdapter.EpicTypeAdapter;
-import typeAdapter.SubtaskTypeAdapter;
+import typeAdapter.DurationTypeAdapter;
+import typeAdapter.EpicTypeAdapter;
+import typeAdapter.LocalDataTimeAdapter;
+import typeAdapter.SubtaskAdapter;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -20,12 +22,12 @@ import java.time.Duration;
 import java.time.LocalDateTime;
 
 public class HttpTaskServer {
-    static final TaskManager taskManager = new InMemoryTaskManager();
+    static final TaskManager taskManager = new FileBackedTaskManager();
     static GsonBuilder gsonBuilder = new GsonBuilder()
             .registerTypeAdapter(Duration.class, new DurationTypeAdapter())
             .registerTypeAdapter(LocalDateTime.class, new LocalDataTimeAdapter())
-//            .registerTypeAdapter(Epic.class, new EpicTypeAdapter())
-            .registerTypeAdapter(Subtask.class, new SubtaskTypeAdapter())
+            .registerTypeAdapter(Epic.class, new EpicTypeAdapter())
+            .registerTypeAdapter(Subtask.class, new SubtaskAdapter())
             .setPrettyPrinting();
     static final Gson gson = gsonBuilder.create();
 
@@ -34,10 +36,11 @@ public class HttpTaskServer {
         taskManager.createEpic(new Epic("N", "D"));
         taskManager.createSubtask(new Subtask(Status.NEW, "Name", "D", taskManager.getEpicById(1), Duration.ZERO, LocalDateTime.now()));
         try {
-            HttpServer server = HttpServer.create(new InetSocketAddress(8080), 1);
+            HttpServer server = HttpServer.create(new InetSocketAddress(8080), 0);
             server.createContext("/tasks", new TasksHandler());
             server.createContext("/subtasks", new SubtaskHandler());
             server.createContext("/epics", new EpicHandler());
+            server.createContext("/history", new HistoryHandler());
 
             server.start();
             System.out.println("Server started");
@@ -46,7 +49,23 @@ public class HttpTaskServer {
         }
     }
 
+    static class HistoryHandler implements HttpHandler {
+        @Override
+        public void handle(HttpExchange httpExchange) throws IOException {
+            String response;
+            int id = BaseHttpHandler.checkId(httpExchange);
+
+            if (id == -1 || httpExchange.getRequestMethod().equals("GET")) {
+                response = gson.toJson(taskManager.getHistory());
+                BaseHttpHandler.sendText(httpExchange, response, 200);
+            }
+            System.out.println("История незнает id");
+            BaseHttpHandler.sendNotFound(httpExchange);
+        }
+    }
+
     static class EpicHandler implements HttpHandler {
+        @Override
         public void handle(HttpExchange exchange) throws IOException {
             String response;
             int id = BaseHttpHandler.checkId(exchange);
@@ -58,12 +77,18 @@ public class HttpTaskServer {
                         response = gson.toJson(taskManager.getAllEpic());
                         BaseHttpHandler.sendText(exchange, response, 200);
                     } else {
-                        Epic task = taskManager.getEpicById(id);
-                        if (task != null) {
-                            response = gson.toJson(task, Epic.class);
-                            BaseHttpHandler.sendText(exchange, response, 200);
+                        if (exchange.getRequestURI().toString().split("/")[3].equals("subtasks")) {
+                            BaseHttpHandler.sendText(exchange
+                                    , gson.toJson(taskManager.getEpicById(id).getSubTasks())
+                                    , 200);
                         } else {
-                            BaseHttpHandler.sendText(exchange,"такого Epic нет",404);
+                            Epic task = taskManager.getEpicById(id);
+                            if (task != null) {
+                                response = gson.toJson(task, Epic.class);
+                                BaseHttpHandler.sendText(exchange, response, 200);
+                            } else {
+                                BaseHttpHandler.sendText(exchange,"такого Epic нет",404);
+                            }
                         }
                     }
                 }

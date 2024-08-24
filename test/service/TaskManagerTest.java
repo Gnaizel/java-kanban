@@ -10,7 +10,10 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.BeforeEach;
 import com.google.gson.*;
 //import typeAdapter.EpicTypeAdapter;
-import typeAdapter.SubtaskTypeAdapter;
+import typeAdapter.DurationTypeAdapter;
+import typeAdapter.EpicTypeAdapter;
+import typeAdapter.LocalDataTimeAdapter;
+import typeAdapter.SubtaskAdapter;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -83,16 +86,20 @@ class TaskManagerTest {
         Gson gson = new GsonBuilder()
                 .registerTypeAdapter(Duration.class, new DurationTypeAdapter())
                 .registerTypeAdapter(LocalDateTime.class, new LocalDataTimeAdapter())
-//                .registerTypeAdapter(Epic.class, new EpicTypeAdapter())
-                .registerTypeAdapter(Subtask.class, new SubtaskTypeAdapter())
+                .registerTypeAdapter(Epic.class, new EpicTypeAdapter())
+                .registerTypeAdapter(Subtask.class, new SubtaskAdapter())
                 .setPrettyPrinting()
                 .create();
         Epic epic = new Epic("Name1", "Description1");
         String json = gson.toJson(epic);
+        System.out.println(json);
         manager.createEpic(gson.fromJson(json, Epic.class));
-        manager.createSubtask(new Subtask(Status.IN_PROGRESS, "Name1Sub", "Description1Sub"
-                , manager.getEpicById(1), Duration.ZERO, LocalDateTime.now()));
-        System.out.println(gson.toJson(manager.getEpicById(1)));
+        Subtask subtask = new Subtask(Status.IN_PROGRESS, "Name1Sub", "Description1Sub"
+                , manager.getEpicById(1), Duration.ZERO, LocalDateTime.now());
+        json = gson.toJson(subtask);
+        System.out.println(json);
+        manager.createSubtask(gson.fromJson(json, Subtask.class));
+       System.out.println(gson.toJson(manager.getEpicById(1)));
     }
 
     @Test

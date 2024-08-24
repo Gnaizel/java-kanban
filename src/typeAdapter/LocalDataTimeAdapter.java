@@ -1,11 +1,10 @@
-package model;
+package typeAdapter;
 
 import com.google.gson.TypeAdapter;
 import com.google.gson.stream.JsonWriter;
 import com.google.gson.stream.JsonReader;
 
 import java.io.IOException;
-import java.time.DateTimeException;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 

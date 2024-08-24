@@ -26,7 +26,7 @@ public class BaseHttpHandler {
         int id;
         try {
             String[] pathParts = path.split("/");
-            id = Integer.parseInt(pathParts[pathParts.length - 1]);
+            id = Integer.parseInt(pathParts[2]);
         } catch (NumberFormatException | ArrayIndexOutOfBoundsException | NullPointerException e) {
             id = -1;
         }
