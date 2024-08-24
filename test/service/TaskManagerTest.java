@@ -11,10 +11,10 @@ import org.junit.jupiter.api.BeforeEach;
 
 import com.google.gson.*;
 
-import typeAdapter.DurationAdapter;
-import typeAdapter.EpicAdapter;
-import typeAdapter.LocalDataTimeAdapter;
-import typeAdapter.SubtaskAdapter;
+import adapter.DurationAdapter;
+import adapter.EpicAdapter;
+import adapter.LocalDataTimeAdapter;
+import adapter.SubtaskAdapter;
 
 import static org.junit.jupiter.api.Assertions.*;
 

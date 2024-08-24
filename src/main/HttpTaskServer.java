@@ -12,10 +12,10 @@ import model.Subtask;
 import model.Task;
 import service.FileBackedTaskManager;
 import service.TaskManager;
-import typeAdapter.DurationAdapter;
-import typeAdapter.EpicAdapter;
-import typeAdapter.LocalDataTimeAdapter;
-import typeAdapter.SubtaskAdapter;
+import adapter.DurationAdapter;
+import adapter.EpicAdapter;
+import adapter.LocalDataTimeAdapter;
+import adapter.SubtaskAdapter;
 
 import java.io.IOException;
 import java.io.InputStream;
