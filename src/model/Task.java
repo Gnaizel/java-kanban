@@ -53,14 +53,14 @@ public class Task implements Comparable<Task> {
             case "TASK":
                 manager.createTaskForSaved(new Task(status, name, description, duration, startTime, id));
                 break;
-            default:
-                break;
             case "EPIC":
                 manager.createEpicForSaved(new Epic(status, name, description, duration, startTime, id));
                 break;
             case "SUBTASK":
                 int epicId = Integer.parseInt(line[7]);
                 manager.createSubtaskForSaved(new Subtask(status, name, description, id, manager.getEpicById(epicId), duration, startTime));
+                break;
+            default:
                 break;
         }
     }
