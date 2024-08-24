@@ -35,8 +35,7 @@ public class BaseHttpHandler {
 
     static void sendText(HttpExchange h, int code) throws IOException {
         h.sendResponseHeaders(code, 0);
-        try (OutputStream os = h.getResponseBody()) {
-        }
+        OutputStream os = h.getResponseBody();
     }
 
     static void sendNotFound(HttpExchange h) throws IOException {
