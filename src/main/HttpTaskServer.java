@@ -12,10 +12,10 @@ import model.Subtask;
 import model.Task;
 import service.FileBackedTaskManager;
 import service.TaskManager;
-import typeAdapter.DurationAdapter;
-import typeAdapter.EpicAdapter;
-import typeAdapter.LocalDataTimeAdapter;
-import typeAdapter.SubtaskAdapter;
+import adapter.DurationAdapter;
+import adapter.EpicAdapter;
+import adapter.LocalDataTimeAdapter;
+import adapter.SubtaskAdapter;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -93,8 +93,7 @@ public class HttpTaskServer {
                         BaseHttpHandler.sendText(exchange, response, 200);
                     } else {
                         if (exchange.getRequestURI().toString().split("/")[3].equals("subtasks")) {
-                            BaseHttpHandler.sendText(exchange
-                                    , gson.toJson(taskManager.getEpicById(id).getSubTasks())
+                            BaseHttpHandler.sendText(exchange, gson.toJson(taskManager.getEpicById(id).getSubTasks())
                                     , 200);
                         } else {
                             Epic task = taskManager.getEpicById(id);

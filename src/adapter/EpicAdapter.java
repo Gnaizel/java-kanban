@@ -1,4 +1,4 @@
-package typeAdapter;
+package adapter;
 
 import com.google.gson.*;
 import model.Epic;
