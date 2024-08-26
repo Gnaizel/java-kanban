@@ -224,9 +224,10 @@ public class InMemoryTaskManager implements TaskManager {
     @Override
     public boolean isValidTimeTask(Task task) {
         if (task instanceof Epic epic) {
-            return epicMap.values().stream()
+            epicMap.values().stream()
                     .filter(otherTask -> otherTask != task)
-                    .noneMatch(otherTask -> true);
+                    .noneMatch(otherTask -> false);
+            return true;
         } else if (task instanceof Subtask subtask) {
             return subTaskMap.values().stream()
                     .filter(otherTask -> otherTask != task)

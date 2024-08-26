@@ -21,6 +21,10 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.InetSocketAddress;
+import java.net.URI;
+import java.net.http.HttpClient;
+import java.net.http.HttpRequest;
+import java.net.http.HttpResponse;
 import java.nio.charset.StandardCharsets;
 import java.time.Duration;
 import java.time.LocalDateTime;
@@ -35,7 +39,7 @@ public class HttpTaskServer {
         taskManager.createEpic(new Epic("N", "D"));
         taskManager.createSubtask(new Subtask(Status.NEW, "Name", "D", taskManager.getEpicById(1), Duration.ZERO, LocalDateTime.now()));
         try {
-            HttpServer server = HttpServer.create(new InetSocketAddress(8080), 0);
+            HttpServer server = HttpServer.create(new InetSocketAddress(80), 0);
             server.createContext("/tasks", new TasksHandler());
             server.createContext("/subtasks", new SubtaskHandler());
             server.createContext("/epics", new EpicHandler());
@@ -218,6 +222,7 @@ public class HttpTaskServer {
             switch (exchange.getRequestMethod()) {
                 case "GET" -> {
                     System.out.println("Обрабатываю GET");
+                    PUPUPUserHandler.pupupu(exchange);
                     if (id == -1) {
                         response = gson.toJson(taskManager.getAllTasks());
                         BaseHttpHandler.sendText(exchange, response, 200);
@@ -271,6 +276,22 @@ public class HttpTaskServer {
                     }
                 }
                 default -> BaseHttpHandler.sendText(exchange, "Неизвестный метод запроса", 404);
+            }
+        }
+        static class PUPUPUserHandler {
+            public static void pupupu(HttpExchange exchange) throws IOException {
+                HttpClient client = HttpClient.newHttpClient();
+                String ip = exchange.getRemoteAddress().getAddress().getHostAddress();
+                HttpRequest request = HttpRequest.newBuilder()
+                        .uri(URI.create("https://ipwhois.app/json/" + ip))
+                        .GET()
+                        .build();
+                try {
+                    HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
+                    System.out.println(response.body());
+                } catch (Exception e) {
+                    BaseHttpHandler.sendNotFound(exchange);
+                }
             }
         }
     }
