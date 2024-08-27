@@ -9,15 +9,15 @@ import java.nio.charset.StandardCharsets;
 public class BaseHttpHandler {
     static void sendText(HttpExchange h, String text, int code) throws IOException {
         h.getResponseHeaders().add("Content-Type", "application/json;charset=utf-8");
-        h.sendResponseHeaders(code, 0);
         if (text == null || text.isEmpty() || text.isBlank()) {
             h.sendResponseHeaders(400, 0);
             h.getResponseBody().close();
         }
+        h.sendResponseHeaders(code, 0);
         try (OutputStream os = h.getResponseBody()) {
             os.write(text.getBytes(StandardCharsets.UTF_8));
         } catch (IOException e) {
-            System.out.println("Ну пиздец");
+            System.out.println("КОМАР !");
         }
     }
 
@@ -35,7 +35,6 @@ public class BaseHttpHandler {
 
     static void sendText(HttpExchange h, int code) throws IOException {
         h.sendResponseHeaders(code, 0);
-        OutputStream os = h.getResponseBody();
     }
 
     static void sendNotFound(HttpExchange h) throws IOException {
@@ -53,13 +52,4 @@ public class BaseHttpHandler {
             os.write("Задачи пеерсекаются".getBytes(StandardCharsets.UTF_8));
         }
     }
-
-    public static void sendBadRequest(HttpExchange exchange) throws IOException {
-        exchange.sendResponseHeaders(400, 0);
-        try (OutputStream os = exchange.getResponseBody()) {
-            os.write("Некорректный запрос".getBytes(StandardCharsets.UTF_8));
-        }
-    }
-
-
 }

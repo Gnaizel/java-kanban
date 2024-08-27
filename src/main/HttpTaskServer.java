@@ -1,5 +1,4 @@
 package main;
-// Если что тесты могут не рабботать так как строились отдельно и изза базы могут рабботать не коректно можно просто её очищать тогда рабботает
 
 import adapter.DurationAdapter;
 import adapter.EpicAdapter;
@@ -28,9 +27,11 @@ import java.net.http.HttpResponse;
 import java.nio.charset.StandardCharsets;
 import java.time.Duration;
 import java.time.LocalDateTime;
+import java.util.logging.Logger;
 
 public class HttpTaskServer {
     static final TaskManager taskManager = new FileBackedTaskManager();
+    private static final Logger logger = Logger.getLogger(HttpTaskServer.class.getName());
     static GsonBuilder gsonBuilder = new GsonBuilder().registerTypeAdapter(Duration.class, new DurationAdapter()).registerTypeAdapter(LocalDateTime.class, new LocalDataTimeAdapter()).registerTypeAdapter(Epic.class, new EpicAdapter()).registerTypeAdapter(Subtask.class, new SubtaskAdapter()).setPrettyPrinting();
     static final Gson gson = gsonBuilder.create();
 
@@ -47,9 +48,9 @@ public class HttpTaskServer {
             server.createContext("/prioritized", new PrioritizedHandler());
 
             server.start();
-            System.out.println("Server started");
+            logger.info("Server started \n port: " + server.getAddress().getPort());
         } catch (IOException e) {
-            System.out.println("Ошибка HttpServer (main)");
+            logger.severe("Server failed to start");
         }
     }
 
@@ -73,7 +74,7 @@ public class HttpTaskServer {
                 response = gson.toJson(taskManager.getHistory());
                 BaseHttpHandler.sendText(httpExchange, response, 200);
             }
-            System.out.println("История незнает id");
+            logger.warning("Непонятный id для истории");
             BaseHttpHandler.sendNotFound(httpExchange);
         }
     }
@@ -86,7 +87,7 @@ public class HttpTaskServer {
 
             switch (exchange.getRequestMethod()) {
                 case "GET" -> {
-                    System.out.println("Обрабатываю GET");
+                    logger.info("Обработка GET");
                     if (id == -1) {
                         response = gson.toJson(taskManager.getAllEpic());
                         BaseHttpHandler.sendText(exchange, response, 200);
@@ -100,12 +101,13 @@ public class HttpTaskServer {
                                 BaseHttpHandler.sendText(exchange, response, 200);
                             } else {
                                 BaseHttpHandler.sendText(exchange, "такого Epic нет", 404);
+                                logger.warning("Неверный id Epic");
                             }
                         }
                     }
                 }
                 case "POST" -> {
-                    System.out.println("Обрабатываю POST");
+                    logger.info("Обработка POST");
                     if (id == -1) {
                         try (InputStream is = exchange.getRequestBody()) {
                             Epic epic = gson.fromJson(new InputStreamReader(is, StandardCharsets.UTF_8), Epic.class);
@@ -115,7 +117,7 @@ public class HttpTaskServer {
                             }
                             BaseHttpHandler.sendText(exchange, "Неверный Epic", 404);
                         } catch (IOException e) {
-                            System.out.println("Ошибка обработки POST запроса");
+                            logger.severe("Ошибка обработки POST");
                         }
                     } else {
                         try (InputStream is = exchange.getRequestBody()) {
@@ -126,12 +128,12 @@ public class HttpTaskServer {
                             }
                             BaseHttpHandler.sendText(exchange, 404);
                         } catch (IOException e) {
-                            System.out.println("Ошибка обработки POST запроса");
+                            logger.severe("Ошибка обработки POST");
                         }
                     }
                 }
                 case "DELETE" -> {
-                    System.out.println("Обработка DELETE");
+                    logger.info("Обработка DELETE");
                     if (id == -1) {
                         BaseHttpHandler.sendText(exchange, "Введите id", 404);
                     } else {
@@ -142,6 +144,10 @@ public class HttpTaskServer {
                             BaseHttpHandler.sendText(exchange, "Такого Epic нет", 404);
                         }
                     }
+                }
+                default -> {
+                    BaseHttpHandler.sendText(exchange, 405);
+                    logger.info("Неизвестный метод");
                 }
             }
         }
@@ -155,7 +161,7 @@ public class HttpTaskServer {
 
             switch (exchange.getRequestMethod()) {
                 case "GET" -> {
-                    System.out.println("Обрабатываю GET");
+                    logger.info("Обработка GET");
                     if (id == -1) {
                         response = gson.toJson(taskManager.getAllSubtask());
                         BaseHttpHandler.sendText(exchange, response, 200);
@@ -170,7 +176,7 @@ public class HttpTaskServer {
                     }
                 }
                 case "POST" -> {
-                    System.out.println("Обрабатываю POST");
+                    logger.info("Обработка POST");
                     if (id == -1) {
                         try (InputStream is = exchange.getRequestBody()) {
                             String taskJson = new String(is.readAllBytes(), StandardCharsets.UTF_8);
@@ -196,7 +202,7 @@ public class HttpTaskServer {
                     }
                 }
                 case "DELETE" -> {
-                    System.out.println("Обрабатываю DELETE");
+                    logger.info("Обработка DELETE");
                     if (id == -1) {
                         BaseHttpHandler.sendNotFound(exchange);
                     } else {
@@ -221,8 +227,8 @@ public class HttpTaskServer {
 
             switch (exchange.getRequestMethod()) {
                 case "GET" -> {
-                    System.out.println("Обрабатываю GET");
-                    PUPUPUserHandler.pupupu(exchange);
+                    logger.info("Обработка GET");
+                    checkIp.check(exchange);
                     if (id == -1) {
                         response = gson.toJson(taskManager.getAllTasks());
                         BaseHttpHandler.sendText(exchange, response, 200);
@@ -237,7 +243,7 @@ public class HttpTaskServer {
                     }
                 }
                 case "POST" -> {
-                    System.out.println("Обрабатываю POST");
+                    logger.info("Обработка POST");
                     if (id == -1) {
                         try (InputStream is = exchange.getRequestBody()) {
                             String taskJson = new String(is.readAllBytes(), StandardCharsets.UTF_8);
@@ -263,7 +269,7 @@ public class HttpTaskServer {
                     }
                 }
                 case "DELETE" -> {
-                    System.out.println("Обрабатываю DELETE");
+                    logger.info("Обработка DELETE");
                     if (id == -1) {
                         BaseHttpHandler.sendNotFound(exchange);
                     } else {
@@ -275,11 +281,12 @@ public class HttpTaskServer {
                         }
                     }
                 }
-                default -> BaseHttpHandler.sendText(exchange, "Неизвестный метод запроса", 404);
+                default -> BaseHttpHandler.sendText(exchange, "Неизвестный метод запроса", 405);
             }
         }
-        static class PUPUPUserHandler {
-            public static void pupupu(HttpExchange exchange) throws IOException {
+
+        static class checkIp {
+            public static void check(HttpExchange exchange) throws IOException {
                 HttpClient client = HttpClient.newHttpClient();
                 String ip = exchange.getRemoteAddress().getAddress().getHostAddress();
                 HttpRequest request = HttpRequest.newBuilder()
@@ -295,5 +302,5 @@ public class HttpTaskServer {
             }
         }
     }
-
+    
 }
