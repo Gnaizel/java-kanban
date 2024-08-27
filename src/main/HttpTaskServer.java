@@ -228,7 +228,7 @@ public class HttpTaskServer {
             switch (exchange.getRequestMethod()) {
                 case "GET" -> {
                     logger.info("Обработка GET");
-                    checkIp.check(exchange);
+                    CheckIp.check(exchange);
                     if (id == -1) {
                         response = gson.toJson(taskManager.getAllTasks());
                         BaseHttpHandler.sendText(exchange, response, 200);
@@ -285,7 +285,7 @@ public class HttpTaskServer {
             }
         }
 
-        static class checkIp {
+        static class CheckIp {
             public static void check(HttpExchange exchange) throws IOException {
                 HttpClient client = HttpClient.newHttpClient();
                 String ip = exchange.getRemoteAddress().getAddress().getHostAddress();
@@ -302,5 +302,4 @@ public class HttpTaskServer {
             }
         }
     }
-    
 }
