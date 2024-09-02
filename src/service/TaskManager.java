@@ -20,6 +20,10 @@ public interface TaskManager {
 
     List<Task> getAllTasks();
 
+    List<Epic> getAllEpic();
+
+    List<Subtask> getAllSubtask();
+
     void deleteAllTasks();
 
     void deleteAllEpics();
@@ -38,11 +42,11 @@ public interface TaskManager {
 
     Subtask getSubtaskById(int taskId);
 
-    void updateTask(Task updatedTask);
+    void updateTask(int id, Task updatedTask);
 
-    void updateEpic(Epic updatedEpic);
+    void updateEpic(int id, Epic updatedEpic);
 
-    void updateSubtask(Subtask updatedSubtask);
+    void updateSubtask(int id, Subtask updatedSubtask);
 
     void setSubTaskStatus(Subtask subtask, Status status);
 

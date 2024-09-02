@@ -75,6 +75,7 @@ public class InMemoryTaskManager implements TaskManager {
         return new ArrayList<>(tasksMap.values());
     }
 
+    @Override
     public List<Epic> getAllEpic() {
         if (epicMap.isEmpty()) {
             return null;
@@ -82,6 +83,7 @@ public class InMemoryTaskManager implements TaskManager {
         return new ArrayList<>(epicMap.values());
     }
 
+    @Override
     public List<Subtask> getAllSubtask() {
         if (subTaskMap.isEmpty()) {
             return null;
@@ -138,6 +140,14 @@ public class InMemoryTaskManager implements TaskManager {
         return null;
     }
 
+    public List<Epic> getEpics() {
+        return new ArrayList<>(epicMap.values());
+    }
+
+    public List<Subtask> getSubtasks() {
+        return new ArrayList<>(subTaskMap.values());
+    }
+
     @Override
     public Subtask getSubtaskById(int id) {
         if (subTaskMap.containsKey(id)) {
@@ -157,18 +167,18 @@ public class InMemoryTaskManager implements TaskManager {
     }
 
     @Override
-    public void updateTask(Task updatedTask) {
-        tasksMap.replace(updatedTask.getID(), updatedTask);
+    public void updateTask(int id, Task updatedTask) {
+        tasksMap.replace(id, updatedTask);
     }
 
     @Override
-    public void updateEpic(Epic updatedEpic) {
-        epicMap.replace(updatedEpic.getID(), updatedEpic);
+    public void updateEpic(int id, Epic updatedEpic) {
+        epicMap.replace(id, updatedEpic);
     }
 
     @Override
-    public void updateSubtask(Subtask updatedSubtask) {
-        subTaskMap.replace(updatedSubtask.getID(), updatedSubtask);
+    public void updateSubtask(int id, Subtask updatedSubtask) {
+        subTaskMap.replace(id, updatedSubtask);
         updateEpicStatus(getEpicById(updatedSubtask.getEpicId()));
     }
 
@@ -207,36 +217,29 @@ public class InMemoryTaskManager implements TaskManager {
         return historyTask.getHistory();
     }
 
-//    @Override
-//    public boolean isValidTimeTask(Task task) {
-//        Set<LocalDateTime> tasksStarted = new HashSet<>();
-//
-//        tasksStarted.addAll(tasksMap.values().stream()
-//                .map(task1 -> task1.getStartTime().plusMinutes(task1.getDuration()))
-//                .collect(Collectors.toSet()));
-//
-//        tasksStarted.addAll(epicMap.values().stream()
-//                .map(task1 -> task1.getStartTime().plusMinutes(task1.getDuration()))
-//                .collect(Collectors.toSet()));
-//
-//        tasksStarted.addAll(subTaskMap.values().stream()
-//                .map(task1 -> task1.getStartTime().plusMinutes(task1.getDuration()))
-//                .collect(Collectors.toSet()));
-//
-//        return !tasksStarted.contains(task.getStartTime());
-//    }
-
     private boolean timeOverlap(LocalDateTime start1, LocalDateTime end1, LocalDateTime start2, LocalDateTime end2) {
         return (start1.isBefore(end2) || start1.isEqual(end2)) && (end1.isAfter(start2) || end1.isEqual(start2));
     } // Накладывается ли задача
 
     @Override
     public boolean isValidTimeTask(Task task) {
-        return tasksMap.values().stream()
-                .filter(otherTask -> otherTask != task)
-                .filter(otherTask -> timeOverlap(task.getStartTime(), task.getEndTime(),
-                        otherTask.getStartTime(), otherTask.getEndTime()))
-                .count() == 0;
+        if (task instanceof Epic epic) {
+            epicMap.values().stream()
+                    .filter(otherTask -> otherTask != task)
+                    .noneMatch(otherTask -> false);
+            return true;
+        } else if (task instanceof Subtask subtask) {
+            return subTaskMap.values().stream()
+                    .filter(otherTask -> otherTask != task)
+                    .noneMatch(otherTask -> timeOverlap(task.getStartTime(), task.getEndTime(),
+                            otherTask.getStartTime(), otherTask.getEndTime()));
+        } else if (task != null) {
+            return tasksMap.values().stream()
+                    .filter(otherTask -> otherTask != task)
+                    .noneMatch(otherTask -> timeOverlap(task.getStartTime(), task.getEndTime(),
+                            otherTask.getStartTime(), otherTask.getEndTime()));
+        }
+        return false;
     }
 
 }

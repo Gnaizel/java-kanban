@@ -11,7 +11,7 @@ class ManagersTest {
     @Test
     void getManagers() {
         Managers.getDefaultHistory();
-        assertSame(InMemoryTaskManager.class, Managers.getDefault().getClass());
+        assertSame(InMemoryTaskManager.class, Managers.getInMemoryTaskManager().getClass());
         assertSame(InMemoryHistoryManager.class, Managers.getDefaultHistory().getClass());
     }
 }

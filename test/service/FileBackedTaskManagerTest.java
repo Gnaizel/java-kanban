@@ -1,14 +1,17 @@
 package service;
 
-import model.*;
-
-import org.junit.jupiter.api.Test;
+import model.Epic;
+import model.Status;
+import model.Subtask;
+import model.Task;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import java.time.Duration;
 import java.time.LocalDateTime;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNull;
 
 
 class FileBackedTaskManagerTest {
@@ -18,6 +21,7 @@ class FileBackedTaskManagerTest {
     @BeforeEach
     void createTaskManager() {
         manager = new FileBackedTaskManager();
+        manager.clearAll();
     }
 
     @Test
@@ -40,7 +44,7 @@ class FileBackedTaskManagerTest {
 
         manager.createSubtask(new Subtask(Status.IN_PROGRESS, "SubTask#3"
                 , "SubTask созданый при первом запуске || Относится к Epic id - 2"
-                , manager.getEpicById(2), Duration.ofMinutes(10), LocalDateTime.parse("2024-08-09T07:03")));
+                , manager.getEpicById(2), Duration.ofMinutes(10), LocalDateTime.parse("2024-09-09T07:03")));
 
 //         Проверка id тасков на ожидаемые
         assertEquals(manager.getTaskById(1).getTaskName(), "Таск #1", "id не совпадают (Таск #1)");

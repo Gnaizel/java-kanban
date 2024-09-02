@@ -5,9 +5,8 @@ import java.time.LocalDateTime;
 
 public class Subtask extends Task {
 
-    private final Type type;
-    private final int id;
     private final Epic epic;
+    private int epicId;
 
 
     public Subtask(Status status,
@@ -19,10 +18,10 @@ public class Subtask extends Task {
         super(status, subTaskName, description, duration, startTime);
         this.epic = epic;
         epic.addSubTask(this);
+        this.epicId = getEpicId();
         this.id = ++service.ID.SubTaskId;
         this.type = Type.SUBTASK;
     }
-
 
     public Subtask(Status status,
                    String subTaskName,
@@ -36,6 +35,20 @@ public class Subtask extends Task {
         this.id = id;
         epic.addSubTask(this);
         this.type = Type.SUBTASK;
+    }
+
+    @Override
+    public Type getType() {
+        return type;
+    }
+
+    @Override
+    public int getId() {
+        return id;
+    }
+
+    public Epic getEpic() {
+        return epic;
     }
 
     public int getEpicId() {
@@ -52,11 +65,11 @@ public class Subtask extends Task {
     public String toString() {
         return id +
                 ", " + type +
-                ", " + getTaskName() +
-                ", " + getStatus() +
-                ", " + getTaskDescription() +
-                ", " + getDuration() +
-                ", " + getStartTime() +
-                ", " + getEpicId();
+                ", " + taskName +
+                ", " + status +
+                ", " + taskDescription +
+                ", " + duration.toMinutes() +
+                ", " + startTime.format(formatter) +
+                ", " + epicId;
     }
 }

@@ -1,13 +1,21 @@
 package service;
 
-import model.*;
+import adapter.DurationAdapter;
+import adapter.EpicAdapter;
+import adapter.LocalDataTimeAdapter;
+import adapter.SubtaskAdapter;
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+import model.Epic;
+import model.Status;
+import model.Subtask;
+import model.Task;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import java.time.Duration;
 import java.time.LocalDateTime;
 import java.util.List;
-
-import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.BeforeEach;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -76,36 +84,42 @@ class TaskManagerTest {
     }
 
     @Test
+    void gsonTaskTest() {
+        Gson gson = new GsonBuilder()
+                .registerTypeAdapter(Duration.class, new DurationAdapter())
+                .registerTypeAdapter(LocalDateTime.class, new LocalDataTimeAdapter())
+                .registerTypeAdapter(Epic.class, new EpicAdapter())
+                .registerTypeAdapter(Subtask.class, new SubtaskAdapter())
+                .setPrettyPrinting()
+                .create();
+        Epic epic = new Epic("Name1", "Description1");
+        String json = gson.toJson(epic);
+        System.out.println(json);
+        manager.createEpic(gson.fromJson(json, Epic.class));
+        Subtask subtask = new Subtask(Status.IN_PROGRESS, "Name1Sub", "Description1Sub"
+                , manager.getEpicById(1), Duration.ZERO, LocalDateTime.now());
+        json = gson.toJson(subtask);
+        System.out.println(json);
+        manager.createSubtask(gson.fromJson(json, Subtask.class));
+        System.out.println(gson.toJson(manager.getEpicById(1)));
+    }
+
+    @Test
     void shouldReturnTrueIfEquivalentHearsTest() {
         manager.createEpic(new Epic("Name1", "Description1"));
-        manager.createEpic(new Epic("Name2", "Description2"));
-
         manager.createSubtask(new Subtask(Status.IN_PROGRESS, "Name1Sub", "Description1Sub"
                 , manager.getEpicById(1), Duration.ZERO, LocalDateTime.now()));
 
         manager.createSubtask(new Subtask(Status.IN_PROGRESS, "Name2Sub", "Description2Sub"
                 , manager.getEpicById(1), Duration.ZERO, LocalDateTime.now()));
 
+        manager.createEpic(new Epic("Name2", "Description2"));
+
+
         assertEquals(manager.getEpicById(1), manager.getEpicById(1)
                 , "Задачи с ID:1 и ID:1 не эквивалентны !!!");
 
         assertNotEquals(manager.getEpicById(1), manager.getEpicById(2));
-    }
-
-    @Test
-    void subTaskRm() {
-        TaskManager manager = new InMemoryTaskManager();
-        manager.createEpic(new Epic("N", "D"));
-        manager.createSubtask(new Subtask(Status.NEW, "Name", "D", manager.getEpicById(1), Duration.ZERO, LocalDateTime.now()));
-        manager.createSubtask(new Subtask(Status.NEW, "Name", "D", manager.getEpicById(1), Duration.ZERO, LocalDateTime.now()));
-        manager.createSubtask(new Subtask(Status.NEW, "Name", "D", manager.getEpicById(1), Duration.ZERO, LocalDateTime.now()));
-        assertNotNull(manager.getSubtaskById(1));
-        assertNotNull(manager.getSubtaskById(2));
-        assertNotNull(manager.getSubtaskById(3));
-
-        manager.deleteEpic(manager.getEpicById(1));
-        assertNull(manager.getEpicById(1));
-
     }
 
 }

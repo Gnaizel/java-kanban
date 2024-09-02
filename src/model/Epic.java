@@ -8,8 +8,6 @@ import java.util.List;
 public class Epic extends Task {
 
     private final List<Subtask> subTasks;
-    private final Type type;
-    private final int id;
     private LocalDateTime endTime;
 
     public Epic(String epicName,
@@ -18,6 +16,7 @@ public class Epic extends Task {
         this.subTasks = new ArrayList<>();
         this.id = ++service.ID.EpicId;
         this.type = Type.EPIC;
+        this.status = Status.NEW;
     }
 
     public Epic(Status status,
@@ -29,7 +28,7 @@ public class Epic extends Task {
         super(status, epicName, epicDescription, duration, startTime);
         this.subTasks = new ArrayList<>();
         this.id = id;
-        this.type = Type.EPIC;
+        type = Type.EPIC;
     }
 
     public void updateTime() {
@@ -91,28 +90,38 @@ public class Epic extends Task {
         return true;
     }
 
-    public void setEndTime(LocalDateTime endTime) {
-        this.endTime = endTime;
-    }
-
     public void removeSubTask(Subtask subtask) {
         subTasks.remove(subtask);
+    }
+
+    @Override
+    public Type getType() {
+        return type;
+    }
+
+    @Override
+    public int getId() {
+        return id;
+    }
+
+    @Override
+    public LocalDateTime getEndTime() {
+        return endTime;
+    }
+
+    public void setEndTime(LocalDateTime endTime) {
+        this.endTime = endTime;
     }
 
     @Override
     public String toString() {
         return id +
                 ", " + type +
-                ", " + getTaskName() +
-                ", " + getStatus() +
-                ", " + getTaskDescription() +
-                ", " + getDuration() +
-                ", " + getStartTime() +
-                ", " + getSubTasks();
-    }
-
-    @Override
-    public int getID() {
-        return this.id;
+                ", " + taskName +
+                ", " + status +
+                ", " + taskDescription +
+                ", " + duration.toMinutes() +
+                ", " + startTime.format(formatter) +
+                ", " + subTasks;
     }
 }

@@ -1,0 +1,10 @@
+<component name="ArtifactManager">
+  <artifact type="jar" build-on-make="true" name="java-kanban:jar">
+    <output-path>$PROJECT_DIR$/out/artifacts/java_kanban_jar</output-path>
+    <root id="archive" name="java-kanban.jar">
+      <element id="module-output" name="java-kanban" />
+      <element id="extracted-dir" path="$MAVEN_REPOSITORY$/org/jetbrains/annotations/24.0.0/annotations-24.0.0.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$USER_HOME$/Downloads/gson-2.11.0.jar" path-in-jar="/" />
+    </root>
+  </artifact>
+</component>
